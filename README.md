@@ -9,7 +9,7 @@ Simple Frontend Web Application for clinic management Case Study
 ## Project Stack
 - Next JS
 - JWT
-- Encription API Request and Response using aes256
+- Encryption API Request and Response using aes256
 - npm
 
 ## Project Feature ( On Goin)
