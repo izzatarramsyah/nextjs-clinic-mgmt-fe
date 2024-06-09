@@ -13,12 +13,13 @@ Simple Frontend Web Application for clinic management Case Study
 - npm
 
 ## Project Feature ( On Going )
-- Admin Page
-  -- Input data patient
-  -- Input data doctor
-  -- Manage Inventory & Medicine Stock
-- Patient Page
-  -- Purhcase medicine
-  -- Queue Registration
-  -- View History ( Visit, Purchase (
-- Doctor Page ( On Development )
+1. **Admin Page**:
+  - Input data patient
+  - Input data doctor
+  - Manage Inventory & Medicine Stock
+2. **Patient Page**:
+  - Purhcase medicine
+  - Queue Registration
+  - View History ( Visit, Purchase History )
+3. **Doctor Page**:
+
