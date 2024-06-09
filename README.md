@@ -12,7 +12,13 @@ Simple Frontend Web Application for clinic management Case Study
 - Encryption API Request and Response using aes256
 - npm
 
-## Project Feature ( On Goin)
-- Admin ( patient, doctor & inventory management )
-- Patient ( Purhcase medicine, Queue Registration, View History )
-- Doctor ( On Development )
+## Project Feature ( On Going )
+- Admin Page
+  -- Input data patient
+  -- Input data doctor
+  -- Manage Inventory & Medicine Stock
+- Patient Page
+  -- Purhcase medicine
+  -- Queue Registration
+  -- View History ( Visit, Purchase (
+- Doctor Page ( On Development )
