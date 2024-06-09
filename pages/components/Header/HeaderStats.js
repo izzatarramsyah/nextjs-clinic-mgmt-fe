@@ -1,9 +1,12 @@
 import {uReact} from 'react'
+import moment from 'moment';
 
 // components
 import CardStats from "../Cards/CardStats.js";
 
-export default function HeaderStats() {
+export default function HeaderStats({headerStat}) {
+
+  const today = "Data per tanggal : " + moment(new Date()).format('DD MMM YYYY');
 
   return (
     <>
@@ -12,36 +15,18 @@ export default function HeaderStats() {
         <div className="px-4 md:px-10 mx-auto w-full">
             {/* Card stats */}
             <div className="flex flex-wrap">
-              <div className="w-full lg:w-4/12 xl:w-12/12 px-4">
-                <CardStats
-                  statSubtitle="Sisa Dompul"
-                  // statTitle={dompul}
-                  statPercentColor="text-emerald-500"
-                  statDescripiron="."
-                  statIconName="fa-solid fa-wallet"
-                  statIconColor="bg-green-300"
-                />
-              </div>
-              <div className="w-full lg:w-4/12 xl:w-12/12 px-4">
-                <CardStats
-                  statSubtitle="Sisa Saldo Add On"
-                  // statTitle={addOn}
-                  statPercentColor="text-emerald-500"
-                  statDescripiron="."
-                  statIconName="fa-solid fa-wallet"
-                  statIconColor="bg-blue-300"
-                />
-              </div>
-              <div className="w-full lg:w-4/12 xl:w-12/12 px-4">
-                <CardStats
-                  statSubtitle="MSISDN"
-                  // statTitle={msisdn}
-                  statPercentColor="text-red-500"
-                  // statDescripiron={masaAktif}
-                  statIconName="fa-solid fa-person"
-                  statIconColor="bg-yellow-500"
-                />
-              </div>
+              {headerStat?.map((row, index) => (
+                <div className="w-full lg:w-4/12 xl:w-12/12 px-4">
+                  <CardStats
+                    statSubtitle={row.statSubtitle}
+                    statTitle={row.statTitle}
+                    statPercentColor={row.statPercentColor}
+                    statDescripiron={today}
+                    statIconName={row.statIconName}
+                    statIconColor={row.statIconColor}
+                  />
+                </div>
+              ))}
             </div>
         </div>
       </div>

@@ -7,6 +7,7 @@ import Image from "next/image";
 
 export default function Register(handleRegister, isLoading) {
     
+  
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [nik, setNik] = useState("");
@@ -14,7 +15,7 @@ export default function Register(handleRegister, isLoading) {
 
   const doRegister = async (e) => {
     e.preventDefault();
-    if (username.trim() && password.trim()) {
+    if (email.trim() && password.trim()) {
         handleRegister({
         email: email,
         password: password,

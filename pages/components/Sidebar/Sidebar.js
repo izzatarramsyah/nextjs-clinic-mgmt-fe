@@ -5,23 +5,11 @@ import { useRouter } from "next/router";
 // import NotificationDropdown from "../Dropdowns/NotificationDropdown.js";
 // import UserDropdown from "../Dropdowns/UserDropdown.js";
 
-export default function Sidebar() {
+export default function Sidebar({ menu }) {
 
   const [collapseShow, setCollapseShow] = useState("hidden");
   const router = useRouter();
-
-  const menuAdmin = [
-    {
-      path: '/admin/DataPatient',
-      title: 'Data Pasien'
-    },
-    {
-      path: '/admin/InputPatient',
-      title: 'Input Pasien'
-    }
-  ];
-
-
+ 
   return (
     <>
       <nav className="md:left-0 md:block md:fixed md:top-0 md:bottom-0 md:overflow-y-auto md:flex-row md:flex-nowrap md:overflow-hidden shadow-xl bg-white flex flex-wrap items-center justify-between relative md:w-64 z-10 py-4 px-6">
@@ -89,7 +77,7 @@ export default function Sidebar() {
             </h6>
             {/* Navigation */}
             <ul className="md:flex-col md:min-w-full flex flex-col list-none">
-            {menuAdmin?.map((row, index) => (
+            {menu?.map((row, index) => (
                 <li key={index} className="items-center">
                 <Link legacyBehavior href = {row.path} >
                   <a

@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 
 // components
 import Loading from "../Loading/Loading.js";
+import Modal from "../../components/Modal/Modal.js";
 
 // services
 import { userService } from "../../../services/UserServices.js";
@@ -13,6 +14,7 @@ const UserDropdown = () => {
   const [dropdownPopoverShow, setDropdownPopoverShow] = useState(false);
   const btnDropdownRef = createRef();
   const popoverDropdownRef = createRef();
+  const [showModal, setShowModal] = useState(false);
 
   // const [loading, setLoading] = useState(false);
   const router = useRouter();
@@ -30,11 +32,11 @@ const UserDropdown = () => {
 
   const doLogout = async (e) => {
     e.preventDefault();
+    setLoading(true);
     try {
       const request = {
         username: userService.userValue.username,
       };
-      // setLoading(true);
       userService.logout(request);
     } catch (e) {
       console.log(e);
@@ -47,6 +49,8 @@ const UserDropdown = () => {
 
   return (
     <>
+     <Modal show={showModal} statusModal={'Sukses'} 
+        messageModal={'ANJING'} onClose={null}></Modal>
       {/* <Loading open={loading}></Loading> */}
       <a
         className="text-blueGray-500 py-1 px-3"
@@ -72,7 +76,7 @@ const UserDropdown = () => {
           className={
             "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
           }
-          onClick={(e) => openProfile()}
+          onClick={(e) => setShowModal(true)}
         >
           Profile
         </a>

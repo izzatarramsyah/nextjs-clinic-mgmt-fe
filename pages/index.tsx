@@ -13,8 +13,11 @@ export default function Home() {
   return (
     useEffect(() => {
       if (userService.userValue) {
-        router.push('/admin/DataPatient');
-      } else {
+        if ( userService.userValue.role == 'admin' ) {
+          router.push('/admin/DataPatient');
+        } else if ( userService.userValue.role == 'user' ) {
+          router.push('/user/QueueRegistration');
+        }
         router.push('/auth/Login');
       }
     })

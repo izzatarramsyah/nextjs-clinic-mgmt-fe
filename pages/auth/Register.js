@@ -23,7 +23,6 @@ export default function Register() {
         email : data.email
       };
       userService.register(request).then((response) => {
-        console.log(response);
         setLoginLoading(false);
       });
     } catch (error) {
@@ -40,7 +39,7 @@ export default function Register() {
       </div>
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div className="bg-white py-8 px-6 shadow rounded-lg sm:px-10">
-          <FormRegister handleRegister={handleRegister} isLoading={loading} />
+          <FormRegister handleRegister={handleRegister} isLoading={false} />
         </div>
       </div>
     </Auth>

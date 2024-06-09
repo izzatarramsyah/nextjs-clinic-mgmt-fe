@@ -21,9 +21,11 @@ export default function Login() {
         password: data.password,
       };
       userService.login(request).then((response) => {
-        isLoading(false);
-        console.log(response)
-        Router.push('/admin/DataPatient');
+        if ( userService.userValue.role == 'admin' ) {
+          Router.push('/admin/DataPatient');
+        } else if ( userService.userValue.role == 'user' ) {
+          Router.push('/user/QueueRegistration');
+        }
       });
     } catch (error) {
       console.log(error);
