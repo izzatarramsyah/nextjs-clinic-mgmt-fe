@@ -80,6 +80,15 @@ const UserDropdown = () => {
         >
           Profile
         </a>
+        <a
+          href=""
+          className={
+            "text-sm py-2 px-4 font-normal block w-full whitespace-nowrap bg-transparent text-blueGray-700"
+          }
+          onClick={(e) => setShowModal(true)}
+        >
+          Profile
+        </a>
         <div className="h-0 my-2 border border-solid border-blueGray-100" />
         <a
           href=""

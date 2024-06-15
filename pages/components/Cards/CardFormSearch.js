@@ -3,9 +3,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 
-export default function CardFormSearch({ menu, parameter, listInformation, dataType, handleSearch, isLoading }) {
-
-  console.log(listInformation)
+export default function CardFormSearch({ menu, parameter, listDataType, dataType, handleSearch, isLoading }) {
 
   const [param, setParam] = useState('');
   const [value, setValue] = useState('');
@@ -41,8 +39,8 @@ export default function CardFormSearch({ menu, parameter, listInformation, dataT
                       </label>
                       <select onChange={(e)=> dataType(e.target.value)}  defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                        <option value='none' disabled> -- Silahkan Pilih -- </option>
-                        {listInformation?.map(option => (
+                        <option value='none' disabled selected> -- Silahkan Pilih -- </option>
+                        {listDataType?.map(option => (
                           <option key={option.value} value={option.value}>
                             {option.text}
                           </option>
@@ -56,7 +54,7 @@ export default function CardFormSearch({ menu, parameter, listInformation, dataT
                       </label>
                       <select onChange={(e)=> setParam(e.target.value)}  defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                        <option value='none' disabled> -- Silahkan Pilih -- </option>
+                        <option value='none' disabled selected> -- Silahkan Pilih -- </option>
                         {parameter?.map(option => (
                           <option key={option.value} value={option.value}>
                             {option.text}

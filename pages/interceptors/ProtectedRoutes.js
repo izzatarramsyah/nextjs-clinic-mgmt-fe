@@ -20,7 +20,7 @@ const ProtectedRoute = ({ router, pathname, children }) => {
   }
 
   if (isBrowser() && isAuthenticated && !pathIsProtected) {
-    router.push('/admin/DataPatient');
+    router.push('/home/dashboard');
   }
   
   return children;

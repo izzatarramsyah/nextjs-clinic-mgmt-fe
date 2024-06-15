@@ -12,12 +12,9 @@ export default function Home() {
   const router = useRouter();
   return (
     useEffect(() => {
-      if (userService.userValue) {
-        if ( userService.userValue.role == 'admin' ) {
-          router.push('/admin/DataPatient');
-        } else if ( userService.userValue.role == 'user' ) {
-          router.push('/user/QueueRegistration');
-        }
+      if (!userService.userValue) {
+        router.push('/home/dashboard');
+      } else {
         router.push('/auth/Login');
       }
     })

@@ -9,9 +9,9 @@ export default function CardBuyMedicine({ cartToConfirm, cartChangeQty, confirmB
 
   const handleChangeQty = ( e, row ) => {
     e.preventDefault();
-    let quantitiy = event.target.value;
+    let quantitiy = e.target.value;
     cartChangeQty({
-      id : row._id,
+      id : row.id,
       quantity : Number(quantitiy),
       price : row.price
     }); 
@@ -36,16 +36,16 @@ export default function CardBuyMedicine({ cartToConfirm, cartChangeQty, confirmB
                 {cartToConfirm?.map((row, index) => (
                   <li key={index} className="flex py-6">
                     <div className="h-20 w-20 flex-shrink-0 overflow-hidden rounded-md  border-gray-200">
-                      <Image alt="xl image" width="1" height="1" src="/img/thumbnail/logo-home.png" className="h-full w-full object-cover object-center"/>
+                      <img alt="xl image" width="1" height="1" src="/img/thumbnail/logo-home.png" className="h-full w-full object-cover object-center"/>
                     </div>
                     <div className="ml-4 flex flex-1 flex-col">
                       <div className="flex justify-between md:text-sm font-medium text-gray-900">
-                          <p>{row.name}</p>
+                          <p>{row.medicineName}</p>
                           <p className="ml-2">Rp. {row.ttlBuy}</p>
                       </div>
                       <div className="flex flex-1 items-end justify-between text-sm">
                         <div><p className="text-gray-500">Jumlah : 
-                          <input type="text" onChange={(e)=> handleChangeQty(e, row)} value={row.quantity} className="focus:outline-none bg-gray-100 border h-6 w-12 rounded text-sm px-2 mx-2"/></p></div>
+                          <input type="number" onChange={(e)=> handleChangeQty(e, row)} value={row.quantity} className="focus:outline-none bg-gray-100 border h-6 w-12 rounded text-sm px-2 mx-2"/></p></div>
                         <div className="flex">
                           <a href="#" onClick={(e)=> handleRemoveToCart(e, row)} className="font-semibold hover:text-red-500 text-gray-500 text-xs">
                           <i className="fas fa-trash mr-3 text-sm"></i></a>

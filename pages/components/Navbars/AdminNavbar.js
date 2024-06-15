@@ -32,6 +32,9 @@ export default function Navbar({ username, onLogout, openProfile }) {
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-blue bg-blue rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pl-10"/>
               </div>
               <button onClick={openProfile}
+                className="text-blueGray-500 hover:text-[#002DBB] w-3/12"> <i className="fas fa-bell"> </i>
+              </button> 
+              <button onClick={openProfile}
                 className="text-blueGray-500 hover:text-[#002DBB] w-3/12"> <i className="fas fa-user"> </i>
               </button> 
               <button onClick={onLogout}

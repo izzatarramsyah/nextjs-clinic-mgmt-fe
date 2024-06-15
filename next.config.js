@@ -4,6 +4,8 @@ const nextConfig = {
   swcMinify: true,
   env: {
     BASE_URL: process.env.BASE_URL,
+    KEY: process.env.KEY,
+    IV: process.env.IV
   }
 }
 

@@ -8,9 +8,9 @@ export const restService = {
 };
 
 function post(endpoint, request){
-    return axiosJWT.post(endpoint , Aes256.encryptUsingAES256(JSON.stringify(request)), {
+    return axiosJWT.post(endpoint ,Aes256.encryptUsingAES256(JSON.stringify(request)), {
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain'
         }}).then((response) => {
         return response;
     });

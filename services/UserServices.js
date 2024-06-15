@@ -19,10 +19,9 @@ export const userService = {
 };
 
 function login(request) {
-    console.log(Aes256.encryptUsingAES256(JSON.stringify(request)))
     return axios.post(`${process.env.BASE_URL}/users/login`, Aes256.encryptUsingAES256(JSON.stringify(request)), {
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain'
         }}).then((response) => {
             if (response.data.responseCode === 200){
                 const decoded = jwtDecode(response.data.accessToken);
@@ -45,10 +44,9 @@ function register( request ){
 }
 
 function logout(request) {
-    console.log(request);
     return axiosJWT.post(`${process.env.BASE_URL}/users/logout`, Aes256.encryptUsingAES256(JSON.stringify(request)), {
         headers: {
-            'Content-Type': 'application/json'
+            'Content-Type': 'text/plain',
         }}).then((response) => {
             if (response.data.responseCode === 200){
                 localStorage.removeItem('user');

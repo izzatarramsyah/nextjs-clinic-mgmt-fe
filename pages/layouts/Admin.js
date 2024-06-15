@@ -8,6 +8,7 @@ import Sidebar from "../components/Sidebar/Sidebar.js";
 import HeaderStats from "../components/Header/HeaderStats.js";
 import FooterAdmin from "../components/Footers/FooterAdmin.js";
 import ModalSubmit from "../components/Modal/ModalSubmit.js";
+import ChatBox from "../components/ChatBox/ChatBox.js";
 
 // services
 import { userService } from "../../services/UserServices.js";
@@ -17,10 +18,6 @@ export default function Admin({ children }) {
 
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-
-  const [stat1, setStat1] = useState("");
-  const [stat2, setStat2] = useState("");
-  const [stat3, setStat3] = useState("");
 
   const [showProfile, setShowProfile] = useState(false);
 
@@ -38,7 +35,7 @@ export default function Admin({ children }) {
     {
       menuId : '3',
       path: '/admin/Information',
-      title: 'Pencarian Data'
+      title: 'Informasi Data'
     },
     {
       menuId : '4',
@@ -47,18 +44,43 @@ export default function Admin({ children }) {
     },
     {
       menuId : '5',
-      path: '/user/QueueRegistration',
+      path: '/patient/QueueRegistration',
       title: 'Pendaftaran Antrian'
     },
     {
       menuId : '6',
-      path: '/user/BuyMedicine',
+      path: '/patient/BuyMedicine',
       title: 'Beli Obat'
     },
     {
       menuId : '7',
-      path: '/user/Information',
-      title: 'Informasi Riwayat'
+      path: '/patient/Information',
+      title: 'Informasi Data'
+    },
+    {
+      menuId : '8',
+      path: '/doctor/MedicalRecord',
+      title: 'Rekam Medis'
+    },
+    {
+      menuId : '9',
+      path: '/doctor/Information',
+      title: 'Informasi Data'
+    },
+    {
+      menuId : '10',
+      path: '/doctor/QueueProcess',
+      title: 'Daftar Antrian'
+    },
+    {
+      menuId : '11',
+      path: '/patient/InboxMessage',
+      title: 'Konsultasi Dokter'
+    },
+    {
+      menuId : '12',
+      path: '/doctor/InboxMessage',
+      title: 'Konsultasi Pasien'
     }
   ];
 
@@ -77,53 +99,86 @@ export default function Admin({ children }) {
       const loadInfo = async () => {
         if ( userService.userValue.role == 'admin' ) {
           restService.get(`${process.env.BASE_URL}/dashboard/adminStats`).then((response) => {
+            console.log(response.data.object)
             setHeaderStat([
               {
                 statSubtitle : 'Jumlah Peserta',
-                statTitle: response.data.countPatient,
+                statTitle: response.data.object.countDoctor,
                 statIconName: 'fa-solid fa-person',
                 statPercentColor: 'fa-solid fa-person',
                 statIconColor: 'bg-green-300'
               },
               {
                 statSubtitle : 'Jumlah Dokter Tersedia',
-                statTitle: response.data.countDoctor,
+                statTitle: response.data.object.countPurchase,
                 statIconName: 'fa-solid fa-user-md',
                 statPercentColor: 'text-emerald-500',
                 statIconColor: 'bg-blue-300'
               },
               {
                 statSubtitle : 'Jumlah Antrian',
-                statTitle:response.data.countQueue,
+                statTitle: response.data.object.countQueue,
                 statIconName: 'fa-solid fa-users',
                 statPercentColor: 'text-red-500',
                 statIconColor: 'bg-red-500'
               }
             ])
           });
-        } else if ( userService.userValue.role == 'user' ) {
-          restService.get(`${process.env.BASE_URL}/dashboard/adminStats`).then((response) => {
+        } else if ( userService.userValue.role == 'patient' ) {
+          const request = {
+            username : userService.userValue.username
+          }
+          restService.post(`${process.env.BASE_URL}/dashboard/patientStats`, request).then((response) => {
             setHeaderStat([
               {
                 statSubtitle : 'Jumlah Saldo',
-                statTitle: response.data.countPatient,
+                statTitle: 'Rp. ' + response.data.object.countBalance[0].balance,
                 statIconName: 'fa-solid fa-wallet',
                 statPercentColor: 'text-emerald-500',
                 statIconColor: 'bg-green-300'
               },
               {
                 statSubtitle : 'Jumlah Kunjungan',
-                statTitle: response.data.countDoctor,
+                statTitle: response.data.object.countVisit,
                 statIconName: 'fa-solid fa-calendar-check',
                 statPercentColor: 'text-emerald-500',
                 statIconColor: 'bg-blue-300'
               },
               {
                 statSubtitle : 'Jumlah Pembelian Obat',
-                statTitle:response.data.countQueue,
+                statTitle: 'Rp. ' + response.data.object.countPurchase[0].totalPurchase,
                 statIconName: 'fa-solid fa-pills',
                 statPercentColor: 'text-red-500',
                 statIconColor: 'bg-red-500'
+              }
+            ])
+          });
+        } else if ( userService.userValue.role == 'doctor' ) {
+          const request = {
+            username : userService.userValue.username
+          }
+          restService.post(`${process.env.BASE_URL}/dashboard/doctortStats`, request).then((response) => {
+            setHeaderStat([
+              {
+                statSubtitle : 'Jumlah Antrian',
+                statTitle: response.data.object.countQueue,
+                statIconName: 'fa-solid fa-users',
+                statPercentColor: 'text-red-500',
+                statIconColor: 'bg-red-300'
+              },
+              {
+                statSubtitle : 'Total Pasien',
+                statTitle: response.data.object.countPatient,
+                statIconName: 'fa-solid fa-user',
+                statPercentColor: 'text-emerald-500',
+                statIconColor: 'bg-blue-300'
+              },
+              {
+                statSubtitle : 'Jumlah Kunjungan',
+                statTitle: response.data.object.countVisit,
+                statIconName: 'fa-solid fa-users',
+                statPercentColor: 'text-green-300',
+                statIconColor: 'bg-green-300'
               }
             ])
           });
@@ -175,6 +230,7 @@ export default function Admin({ children }) {
         <HeaderStats headerStat={headerStat}/>
         <div className="px-4 md:px-10 mx-auto w-full -m-24">
           {children}
+          <ChatBox/>
           <FooterAdmin />
         </div>
       </div>

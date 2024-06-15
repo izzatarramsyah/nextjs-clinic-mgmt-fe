@@ -7,7 +7,7 @@ export default function CardListMedicine({ listMedicine, cartToBuy }) {
 
   const handleAddToCart = (e, row) => {
     cartToBuy({
-      _id : row._id,
+      id : row._id,
       medicineName : row.name,
       quantity : 1,
       price : row.price,
@@ -41,7 +41,7 @@ export default function CardListMedicine({ listMedicine, cartToBuy }) {
                 <label htmlFor={index} className="inline-flex items-center p-5 w-full text-gray-500 bg-white rounded-lg border border-gray-200 cursor-pointer dark:hover:text-gray-300 dark:border-gray-700 dark:peer-checked:text-blue-500 peer-checked:border-blue-600 peer-checked:text-blue-600 hover:text-gray-600 hover:bg-gray-100 dark:text-gray-400 dark:bg-gray-800 dark:hover:bg-gray-700">                           
                   <div className="flex justify-left ">
                     <div className="w-15">
-                      <Image alt="captcha image" width="1" height="1" className="h-20 w-full object-cover object-center" src="/img/thumbnail/logo-home.png" />
+                      <img alt="captcha image" width="1" height="1" className="h-20 w-full object-cover object-center" src="/img/thumbnail/logo-home.png" />
                     </div>
                   </div>
                   <div className="flex flex-col">

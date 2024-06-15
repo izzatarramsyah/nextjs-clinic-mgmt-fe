@@ -14,7 +14,6 @@ export default function CardTable({ headerTable, columnTable }) {
     XLSX.writeFile(workbook, menu + ".xlsx");
   }
 
-
   return (
     <>
       <div className = "relative flex flex-col min-w-0 break-words w-full mb-6 shadow-lg rounded bg-white">

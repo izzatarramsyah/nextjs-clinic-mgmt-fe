@@ -79,7 +79,7 @@ export default function DataPatient() {
     { name: 'Waktu Kunjungan', width: "400px",
       cell:(row) => {
         let visitTime = [];
-        for (const item of row.visitingTime) {
+        for (const item of row.schedule) {
           let itemsArray = item.shift.split(', ').map(item => item.trim());
           let shift = '';
           for (const itemShift of itemsArray) {
