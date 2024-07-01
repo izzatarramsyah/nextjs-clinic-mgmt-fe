@@ -25,7 +25,7 @@ Simple Frontend Web Application for Clinic Management Case Study
      <img width="946" alt="informasi_data" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/cca9cec5-f361-48b2-a164-1128c9416736">
 2. **Patient Page**:
   - buy medicine
-    <img width="955" alt="beli_obat" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/723467b4-4215-4ba6-8695-4d9797090387">
+    <img width="946" alt="buy medic" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/99f1b06d-bc3e-48cf-8ac4-5030f4fa8f3a">
   - Queue Registration
     <img width="942" alt="pendaftaran_antrian" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/ca32c618-9358-451c-8c68-e5bab39488e6">
   - View History ( Visit, Purchase History )
