@@ -1,4 +1,4 @@
-# Angular Simple Project
+# NEXT JS Simple Project
 
 ## Project Name
 Clinic Management
@@ -14,6 +14,10 @@ Simple Frontend Web Application for Clinic Management Case Study
 - npm
 
 ## Project Feature ( On Going )
+**Dashboard**:
+- Queue Information
+<img width="956" alt="queue" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/ca2dbed1-482e-437e-b9f7-d8597ea3bd11">
+
 1. **Admin Page**:
   - Input data patient
     <img width="946" alt="input_admin" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/61c56e56-2ef8-4c99-b356-24e2400ee587">
