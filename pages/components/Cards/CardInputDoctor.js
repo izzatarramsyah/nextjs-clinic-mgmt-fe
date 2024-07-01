@@ -10,8 +10,8 @@ export default function CardInputDoctor({ saveDoctor, slcSpecialization, slcShif
     const [fullname, setFullname] = useState('');
     const [nip, setNip] = useState('');
     const [specialization, setSpecialization] = useState('');
-    const [visitingTimeTemp, setVisitingTimeTemp] = useState([]);
-    const [visitingTime, setVisitingTime] = useState([]);
+    const [scheduleView, setscheduleView] = useState([]);
+    const [schedule, setSchedule] = useState([]);
 
     const [day, setDay] = useState('');
     const [shift, setShift] = useState([]);
@@ -26,27 +26,23 @@ export default function CardInputDoctor({ saveDoctor, slcSpecialization, slcShif
     };
 
     const handleAddShift = (e) => {
-      const existing = visitingTime.find(visitingTime => visitingTime.day === day);
+      const existing = schedule.find(schedule => schedule.day === day);
       if (!existing) {
         let charShift = '';
-        let sft = '';
         for (const item of shift) {
-          const index = slcShift.findIndex(slcShift => slcShift.value === item);
-          charShift = charShift + slcShift[index].text + ", ";
-          sft = sft + slcShift[index].value + ", ";
+          charShift = charShift + item + ", ";
         }
-        const indexDay = slcDays.findIndex(slcDays => slcDays.value === day);
         const temp = {
-          day : slcDays[indexDay].text,
+          day : day,
           shift : charShift.slice(0, -2)
         };
-        setVisitingTimeTemp(prevValue => [...prevValue, temp]);
+        setscheduleView(prevValue => [...prevValue, temp]);
         const data = {
           nip : nip,
           day : day,
-          shift : sft
+          shift : charShift
         };
-        setVisitingTime(prevValue => [...prevValue, data]);
+        setSchedule(prevValue => [...prevValue, data]);
         setShowNotif(true);
       }
     };
@@ -58,13 +54,13 @@ export default function CardInputDoctor({ saveDoctor, slcSpecialization, slcShif
           nip: nip,
           specialization: specialization,
           status: 'ACTIVE',
-          visitingTime : visitingTime
+          schedule : schedule
       });
     }
 
     const handleOpenDetail = async(e) => {
       e.preventDefault();
-      onOpenDetail(visitingTimeTemp);
+      onOpenDetail(scheduleView);
     }
 
   return (
@@ -110,8 +106,9 @@ export default function CardInputDoctor({ saveDoctor, slcSpecialization, slcShif
                       </label>
                       <select onChange={(e)=> setSpecialization(e.target.value)}  defaultValue="none" 
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                        <option key="none"  value="none"  disabled='true'> -- Silahkan Pilih --</option>
                         {slcSpecialization?.map(option => (
-                          <option key={option.value} value={option.value} disabled={option.isDisabled}>
+                          <option key={option.value} value={option.value}>
                             {option.text}
                           </option>
                         ))}
@@ -127,8 +124,9 @@ export default function CardInputDoctor({ saveDoctor, slcSpecialization, slcShif
                     </label>
                     <select onChange={(e)=> setDay(e.target.value)}  defaultValue="none" 
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
+                        <option key="none"  value="none"  disabled='true'> -- Silahkan Pilih --</option>
                         {slcDays?.map(option => (
-                          <option key={option.value} value={option.value} disabled={option.isDisabled}>
+                          <option key={option.value} value={option.value} >
                             {option.text}
                           </option>
                         ))}

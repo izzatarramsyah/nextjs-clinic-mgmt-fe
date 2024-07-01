@@ -3,7 +3,8 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import moment from 'moment';
 
-export default function CardFormSearch({ menu, parameter, listDataType, dataType, handleSearch, isLoading }) {
+export default function CardFormSearch({ menu, parameter, listInformation, changeData, handleSearch, isLoading }) {
+
 
   const [param, setParam] = useState('');
   const [value, setValue] = useState('');
@@ -37,12 +38,12 @@ export default function CardFormSearch({ menu, parameter, listDataType, dataType
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Data
                       </label>
-                      <select onChange={(e)=> dataType(e.target.value)}  defaultValue="none"
+                      <select onChange={(e)=> changeData(e.target.value)} defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                         <option value='none' disabled selected> -- Silahkan Pilih -- </option>
-                        {listDataType?.map(option => (
+                        {listInformation?.map(option => (
                           <option key={option.value} value={option.value}>
-                            {option.text}
+                            {option.title}
                           </option>
                         ))}
                       </select>
@@ -52,9 +53,9 @@ export default function CardFormSearch({ menu, parameter, listDataType, dataType
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Parameter Pencarian
                       </label>
-                      <select onChange={(e)=> setParam(e.target.value)}  defaultValue="none"
+                      <select onChange={(e)=> setParam(e.target.value)}  defaultValue=""
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                        <option value='none' disabled selected> -- Silahkan Pilih -- </option>
+                        <option value='' disabled > -- Silahkan Pilih -- </option>
                         {parameter?.map(option => (
                           <option key={option.value} value={option.value}>
                             {option.text}
@@ -62,7 +63,9 @@ export default function CardFormSearch({ menu, parameter, listDataType, dataType
                         ))}
                       </select>
                     </div>
-                    { (  param == 'date' ? 
+                    { (  
+                      param == '' ? null :  
+                      param == 'date' ? 
                       <div className="flex w-8/12 mb-6"> 
                         <div className="w-full lg:w-6/12 px-4">
                             <label

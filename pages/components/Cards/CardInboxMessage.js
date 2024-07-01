@@ -5,7 +5,7 @@ import moment from 'moment';
 
 import { userService } from "../../../services/UserServices.js";
 
-export default function CardInboxMessage({isLoading, slcParameter, listMessage, handleChangeparam, sendMessage}) {
+export default function CardInboxMessage({isLoading, slcParameter, listMessage, changeDoctor, sendMessage}) {
 
   const [message, setMessage] = useState("");
     
@@ -19,18 +19,18 @@ export default function CardInboxMessage({isLoading, slcParameter, listMessage, 
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Pilih Dokter
                       </label>
-                      <select onChange={(e)=> handleChangeparam(e.target.value)} defaultValue="none" 
+                      <select onChange={(e)=> changeDoctor(e.target.value)} defaultValue="none" 
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                         <option key="none" value="none" disabled={true}> -- Silahkan Pilih -- </option>
                         {slcParameter?.map(option => (
                           <option key={option._id} value={option.fullname}>
-                            {option.fullname}
+                            {option.fullname} - Poli {option.specialization}
                           </option>
                         ))}
                       </select>
-                    </div>
+                  </div>
                 </div>
-                <div className="flex lg:w-12/12">
+                <div className="flex lg:w-12/12  max-h-screen overflow-y-auto">
                     <div class="w-full px-5 flex flex-col justify-between">
                         <div class="flex flex-col mt-5">
                         {listMessage?.map((row, index) => (
@@ -53,7 +53,7 @@ export default function CardInboxMessage({isLoading, slcParameter, listMessage, 
                             onChange={(e)=> setMessage(e.target.value)}
                             class="border-0 px-3 py-6 mt-5 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"
                             type="text"
-                            placeholder="type your message here..."
+                            placeholder="Tulisa Pesan Anda Disini"
                         />
                         </div>
                     </div>

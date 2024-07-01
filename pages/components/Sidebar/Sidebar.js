@@ -23,7 +23,7 @@ export default function Sidebar({ menu }) {
             <i className="fas fa-bars"></i>
           </button>
           {/* Brand */}
-          <Link legacyBehavior href="/">
+          <Link legacyBehavior href="/dashboard/QueueInformation">
             <a href="#pablo" className="md:block text-left md:pb-2 text-blueGray-600 mr-0 inline-block whitespace-nowrap text-sm uppercase font-bold p-4 px-0">
               Dummy Clinic
             </a>

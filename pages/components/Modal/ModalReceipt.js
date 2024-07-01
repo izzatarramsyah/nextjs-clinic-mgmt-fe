@@ -1,7 +1,8 @@
 import {useState, React} from 'react'
+import moment from 'moment';
 
 export default function ModalReceipt({show , receiptData}) {
-    
+    console.log(receiptData)
     const [showDetail, setShowDetail] = useState(false);
 
     if ( show )
@@ -29,7 +30,7 @@ export default function ModalReceipt({show , receiptData}) {
                             Waktu Transaksi
                         </div>
                         <div className="sm:px-4 lg:py-2 m-2 text-xs font-bold text-center text-black-700">
-                            {receiptData.createdAt}
+                            {moment(new Date()).format('DD-MM-YYYY hh:mm:ss')}
                         </div>
                     </div>
                     <div className="flex justify-between pt-1 mt-1 ">
@@ -50,7 +51,7 @@ export default function ModalReceipt({show , receiptData}) {
                             Detail Transaksi
                         </div>
                         <div className="xs:px-4 lg:py-2 m-2 text-xs text-center text-gray-800">
-                        {receiptData.listMedicine.map((row, index) => (
+                        {receiptData.map((row, index) => (
                             <p key={index}>
                             Beli obat {row.medicineName} sebanyak {row.quantity}Pcs. Transaksi ID : {row._id}
                             </p>

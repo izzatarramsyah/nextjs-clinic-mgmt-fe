@@ -2,11 +2,11 @@ import { useState, useEffect, React, createRef } from "react";
 import Router from "next/router";
 
 import { userService } from "../../../services/UserServices.js";
-import ModalSubmit from "../../components/Modal/ModalSubmit.js";
+import ModalSubmit from "../Modal/ModalForm.js";
 import Modal from "../../components/Modal/Modal.js";
 import UserDropdown from "../../components/Dropdowns/UserDropdown.js";
 
-export default function Navbar({ username, onLogout, openProfile }) {
+export default function Navbar({ username, onLogout, openNotification }) {
  
   return (
     <>
@@ -31,11 +31,8 @@ export default function Navbar({ username, onLogout, openProfile }) {
                 <input type="text" placeholder="Search here..."
                   className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 relative bg-blue bg-blue rounded text-sm shadow outline-none focus:outline-none focus:ring w-full pl-10"/>
               </div>
-              <button onClick={openProfile}
+              <button onClick={openNotification}
                 className="text-blueGray-500 hover:text-[#002DBB] w-3/12"> <i className="fas fa-bell"> </i>
-              </button> 
-              <button onClick={openProfile}
-                className="text-blueGray-500 hover:text-[#002DBB] w-3/12"> <i className="fas fa-user"> </i>
               </button> 
               <button onClick={onLogout}
                 className="text-blueGray-500 hover:text-[#002DBB] w-3/12"> <i className="fas fa-right-from-bracket"> </i>

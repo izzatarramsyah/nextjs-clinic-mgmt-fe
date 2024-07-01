@@ -1,5 +1,6 @@
 import {useState, useEffect, React} from 'react'
 import moment from 'moment';
+import { io } from 'socket.io-client';
 
 // layout for page
 import Admin from "../layouts/Admin.js";
@@ -23,7 +24,6 @@ export default function MedicalRecord() {
 
   const [dataVisit, setDataVisit] = useState([]);
 
-
   useEffect(() => {
     const loadDataPatient = async () => {
         const request = {
@@ -36,31 +36,30 @@ export default function MedicalRecord() {
       loadDataPatient();
   },[]);
 
-  const handleSaveMedicalRecord = (data) => {
+  const handleSaveMedicalRecord = (request) => {
+    const containsNull = Object.values(request).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     try { 
       isLoading(true);
         const req = {
-            id: data.id,
-            status: 'ACTIVE',
-            compliant: data.complaint
+            id: request.id,
+            status: 'FINISHED',
+            compliant: request.complaint
         }
         restService.post(`${process.env.BASE_URL}/visitHistory/updateVisitHistory`, req ).then((response) => {
             if ( response.status == '200' ) {
               isLoading(false);
-                const request = {
-                    doctorName: data.doctorName,
-                    patientName: data.patientName,
-                    bpjsNo: data.bpjsNo,
-                    complaint: data.complaint,
-                    consul: data.consul,
-                    diagnose: data.diagnose,
-                    receiptMedicine : data.receiptMedicine
-                }
                 restService.post(`${process.env.BASE_URL}/medicalRecord/save`, request ).then((response) => {
                     console.log(response.data.object)
                     if ( response.status == '200' ) {
-                        setStatusModal('Sukses')
-                        setMessageModal('Data berhasil dikirim');
+                      setStatusModal('Sukses')
+                      setMessageModal('Data berhasil dikirim');
+                      socket.emit('sendMessage', response.data.object);
                     } else {
                       setStatusModal('Gagal')
                       setMessageModal('Silahkan coba beberapa saat lagi');
@@ -78,10 +77,16 @@ export default function MedicalRecord() {
     }
   }
 
+  const reloadPage = () => {
+    setShowModal(false)
+    if ( statusModal != 'Gagal' ) {
+      window.location.reload();
+    }
+  }
+
   return (
     <Admin>
-      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} 
-        onClose={() => setShowModal(false)}></Modal>
+      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => reloadPage()}></Modal>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
           <CardMedicalRecord isLoading={loading} dataVisit={dataVisit} saveMedicalRecord={handleSaveMedicalRecord} />

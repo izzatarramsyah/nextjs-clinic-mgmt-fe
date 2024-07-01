@@ -7,39 +7,38 @@ import Admin from "../layouts/Admin.js";
 import CardInputDoctor from "../components/Cards/CardInputDoctor.js";
 import CardTable from "../components/Cards/CardTable.js";
 import Modal from "../components/Modal/Modal.js";
-import ModalSubmit from "../components/Modal/ModalSubmit.js";
+import ModalForm from "../components/Modal/ModalForm.js";
+import ModalConfirmation from "../components/Modal/ModalConfirmation.js";
 import ModalTable from "../components/Modal/ModalTable.js";
 
 // serivces
 import { restService } from "../../services/RestService.js";
-// import { userService } from "../../services/UserServices.js";
+import { userService } from "../../services/UserServices.js";
 
 export default function DataPatient() {
   
   const menu = 'Data Dokter';
   
   const slcSpecialization = [
-    { value: 'none', text: '-- Silahkan Pilih --', isDisabled : true },
-    { value: 'general', text: 'UMUM', isDisabled : false },
-    { value: 'dentist', text: 'GIGI', isDisabled : false },
-    { value: 'pediatric', text: 'IBU DAN ANAK', isDisabled : false }
+    { value: 'UMUM', text: 'UMUM', isDisabled : false },
+    { value: 'GIGI', text: 'GIGI', isDisabled : false },
+    { value: 'IBU DAN ANAK', text: 'IBU DAN ANAK', isDisabled : false }
   ];
 
   const slcDays = [
-    { value: 'none', text: '-- Silahkan Pilih --', isDisabled : true },
-    { value: 'monday', text: 'Senin'},
-    { value: 'tuesday', text: 'Selasa'},
-    { value: 'wednesday', text: 'Rabu'},
-    { value: 'thursday', text: 'Kamis'},
-    { value: 'friday', text: 'Jumat'},
-    { value: 'saturday', text: 'Sabtu'},
-    { value: 'sunday', text: 'Minggu'}
+    { value: 'Senin', text: 'Senin'},
+    { value: 'Selasa', text: 'Selasa'},
+    { value: 'Rabu', text: 'Rabu'},
+    { value: 'Kamis', text: 'Kamis'},
+    { value: 'Jumat', text: 'Jumat'},
+    { value: 'Sabtu', text: 'Sabtu'},
+    { value: 'Minggu', text: 'Minggu'}
   ];
 
   const slcShift = [
-    { value: 'SHIFT1', text: '08:00 - 11:00'},
-    { value: 'SHIFT2', text: '13:00 - 16:00'},
-    { value: 'SHIFT3', text: '19:00 - 22:00'}
+    { value: '08:00 - 11:00', text: '08:00 - 11:00'},
+    { value: '13:00 - 16:00', text: '13:00 - 16:00'},
+    { value: '19:00 - 22:00', text: '19:00 - 22:00'}
   ];
 
   const [loading, isLoading] = useState(false);
@@ -68,7 +67,7 @@ export default function DataPatient() {
     },  
     sortable: true , center: true
     },
-    { name: 'Spesialisasi', width: "200px",
+    { name: 'Poli', width: "200px",
       cell:(row) => {
         return (
           <div>{row.specialization}</div>
@@ -78,22 +77,8 @@ export default function DataPatient() {
     },
     { name: 'Waktu Kunjungan', width: "400px",
       cell:(row) => {
-        let visitTime = [];
-        for (const item of row.schedule) {
-          let itemsArray = item.shift.split(', ').map(item => item.trim());
-          let shift = '';
-          for (const itemShift of itemsArray) {
-            const index = slcShift.findIndex(slcShift => slcShift.value === itemShift);
-            shift = shift + slcShift[index].text + ", ";
-          }
-          const indexDay = slcDays.findIndex(slcDays => slcDays.value === item.day);
-          visitTime.push({
-            day : slcDays[indexDay].text,
-            shift : shift
-          })
-        }
         return (
-          <button onClick={()=> onOpenDetail(visitTime)}
+          <button onClick={()=> onOpenDetail(row.schedule)}
             className="text-blue-500 no-underline hover:underline"> Detail
           </button> 
         )
@@ -149,11 +134,18 @@ export default function DataPatient() {
   },[]);
 
   const saveDoctor = ( request ) => {
+    const containsNull = Object.values(request).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     isLoading(true);
     try { 
       restService.post(`${process.env.BASE_URL}/doctor/saveDoctor`, request ).then((response) => {
         isLoading(false);
-        if ( response.data.status == '200' ) {
+        if ( response.status == '200' ) {
           setShowModal(true);
           setStatusModal('Sukses')
           setMessageModal('Data pasien telah ditambahkan');
@@ -188,8 +180,8 @@ export default function DataPatient() {
       const request = {
         id : id
       }
-      restService.deleteDoctor(`${process.env.BASE_URL}/doctor/deleteDoctor`, request ).then((response) => {
-        setShowModalSubmit(false);
+      restService.post(`${process.env.BASE_URL}/doctor/deleteDoctor`, request ).then((response) => {
+        setShowModalDelete(false);
         if ( response.status == '200' ) {
           setShowModal(true);
           setStatusModal('Sukses')
@@ -206,6 +198,13 @@ export default function DataPatient() {
   }
 
   const updateDoctor = () => {
+    const containsNull = Object.values(request).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     try { 
       const request = {
         id : id,
@@ -232,25 +231,26 @@ export default function DataPatient() {
   }
 
   const onOpenDetail = ( data ) => {
-    console.log(data)
     setColumnDetailShift(data);
     setShowDetailShift(true);
   }
 
+  const reloadPage = () => {
+    setShowModal(false)
+    if ( statusModal != 'Gagal' ) {
+      window.location.reload();
+    }
+  }
+
   return (
     <Admin>
-      <Modal show={showModal} statusModal={statusModal} 
-        messageModal={messageModal} onClose={() => setShowModal(false)}></Modal>
+      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => reloadPage()}></Modal>
       <ModalTable show={showDetailShift} headerDetail={headerDetailShift} 
         columnDetail={columnDetailShift} onClose={() => setShowDetailShift(false)}></ModalTable>
-      <ModalSubmit show={showModalDelete} title='Konfirmasi'
-        onClose={() => setShowModalDelete(false)} onSubmit={() => deleteDoctor()}>
-        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-        </svg>
-        <h3 className="mb-7 text-lg font-bold text-black-500 dark:text-black-400">Apakah anda yakin menghapus data ini ?</h3>
-      </ModalSubmit>
-      <ModalSubmit show={showModalEdit} title='Ubah Data Pasien'
+      <ModalConfirmation show={showModalDelete} onClose={() => setShowModalDelete(false)} onSubmit={() => deleteDoctor()} 
+        text ='Apakah anda yakin menghapus data ini ?'>
+      </ModalConfirmation>
+      <ModalForm show={showModalEdit} title='Ubah Data Pasien'
         onClose={() => setShowModalEdit(false)} onSubmit={() => updateDoctor()}>
         <div class="grid gap-4 mb-4 grid-cols-2">
           <div class="col-span-2">
@@ -275,7 +275,7 @@ export default function DataPatient() {
             </select>
           </div>
         </div>
-      </ModalSubmit>
+      </ModalForm>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
           <CardInputDoctor saveDoctor={saveDoctor} slcSpecialization={slcSpecialization} 

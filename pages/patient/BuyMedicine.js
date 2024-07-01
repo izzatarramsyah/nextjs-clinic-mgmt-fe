@@ -7,7 +7,7 @@ import Admin from "../layouts/Admin.js";
 import CardListMedicine from "../components/Cards/CardListMedicine.js";
 import CardBuyMedicine from "../components/Cards/CardBuyMedicine.js";
 import Modal from "../components/Modal/Modal.js";
-import ModalSubmit from "../components/Modal/ModalSubmit.js";
+import ModalConfirmation from "../components/Modal/ModalConfirmation.js";
 import ModalReceipt from "../components/Modal/ModalReceipt.js";
 
 // serivces
@@ -16,9 +16,11 @@ import { userService } from "../../services/UserServices.js";
 
 export default function BuyMedicine() {
 
+  const [userBalance, setUserBalance] = useState(0);
+
   const [listMedicine, setListMedicine] = useState([]);
   const [total, setTotal] = useState(0);
-  const [balance, setBalance] = useState(100000);
+  const [balance, setBalance] = useState(0);
   const [cartToConfirm, setCartToConfirm] = useState([]);
 
   const [showModal, setShowModal] = useState(false);
@@ -32,6 +34,7 @@ export default function BuyMedicine() {
   const [showModalReceipt, setShowModalReceipt] = useState(false);
 
   useEffect(() => {
+    setUserBalance(100000);
     const loadInfo = async () => {
       restService.get(`${process.env.BASE_URL}/medicine/getListMedicine`).then((response) => {
         console.log(response)
@@ -42,72 +45,50 @@ export default function BuyMedicine() {
   },[]);
 
   const handleAddToCart = ( data ) => {
-    const existing = cartToConfirm.find(cartToConfirm => cartToConfirm._id === data._id);
-      if ( existing ) {
-        // const index = cartToConfirm.findIndex(cartToConfirm => cartToConfirm._id === data._id);
-        let currentQty = existing.quantity += 1;
-        let currentTotalPrice = currentQty * data.price;
-        // let temp_state = [...cartToConfirm];  
-        // temp_state[index] = {...temp_state[index], 
-        //   quantity : currentQty, 
-        //   ttlBuy : Number(currentTotalPrice)};
-        // setCartToConfirm(temp_state);
-        updateCart(data.id, currentQty, Number(Number(currentTotalPrice)))
-      } else {
-        setCartToConfirm([...cartToConfirm, data]);
-      }
-      setTotal(total + Number(data.price));
-      setBalance(balance - (total + Number(data.price)) );
+    const existing = cartToConfirm.find(cartToConfirm => cartToConfirm.medicineName === data.medicineName);
+    let currentTotalPrice = data.quantity * data.price;
+    if ( existing ) {
+      updateCart(data.medicineName, Number(data.quantity) );
+      countTotal();
+    } else {
+      setCartToConfirm([...cartToConfirm, data]);
+      setTotal(total + currentTotalPrice);
+      setBalance(userBalance  - (total + currentTotalPrice) );  
+    }
   }
 
-  const handleChangeQty = ( data ) => {
-    // const index = cartToConfirm.findIndex(cartToConfirm => cartToConfirm._id === data._id);
-    let currentTotalBuy = data.quantity * data.price;
-    let tempSisaDompul = balance - Number(currentTotalBuy);
-    if ( tempSisaDompul > 0 ) {
-      // let temp_state = [...cartToConfirm];  
-      // temp_state[index] = {...temp_state[index], 
-      //   quantity : data.quantity, 
-      //   ttlBuy : Number(currentTotalBuy)
-      // };
-      // setCartToConfirm(temp_state);
-      updateCart(data.id, data.quantity, Number(currentTotalBuy))
-      setTotal(getTotalPayment(cartToConfirm));
-    }
-  };
-
-  const updateCart = (id, qty, total) => {
+  const updateCart = (medicineName, qty) => {
     setCartToConfirm((prevItems) =>
       prevItems.map((item) =>
-        item.id === id ? { ...item, quantity: qty, ttlBuy: total } : item
+        item.medicineName === medicineName ? {...item, quantity: qty} : item
       )
     );
   };
 
-  const getTotalPayment = (cartToConfirm) => {
+  const countTotal = () => {
     let sum = 0
     for (let i = 0; i < cartToConfirm.length; i++) {
-      sum += Number(cartToConfirm[i].ttlBuy)
+      sum += Number((cartToConfirm[i].quantity + cartToConfirm[i].price))
     }
-    setBalance(balance - sum);
-    return sum;
+    setTotal(sum);
+    setBalance(userBalance - sum );    
+  }
+
+  const handleRemoveCart = ( data ) => {
+    setCartToConfirm(cartToConfirm.filter(({medicineName}) => medicineName !== data))
+    const existing = cartToConfirm.find(cartToConfirm => cartToConfirm.medicineName === data);
+    let currentTotalPrice = existing.quantity * existing.price;
+    setTotal(total - Number(currentTotalPrice));
+    setBalance(balance + Number(currentTotalPrice));
   }
 
   const handleBuy = () => {
     try { 
-      let sum = 0;
-      cartToConfirm.forEach(item => {
-        sum += item.quantity * item.price;
-      });
-      const request = {
-        username : userService.userValue.username,
-        totalBuy : sum,
-        listMedicine : cartToConfirm
-      }
       setShowModalConfirm(false);
-      restService.post(`${process.env.BASE_URL}/purchase/medicine`, request ).then((response) => {
-        console.log(response.data.object)
+      restService.post(`${process.env.BASE_URL}/purchase/medicine`, cartToConfirm).then((response) => {
         if ( response.status == '200' ) {
+          debugger;
+          console.log(response.data.object)
           setShowModalReceipt(true);
           setReceiptData(response.data.object);
         } else {
@@ -119,28 +100,22 @@ export default function BuyMedicine() {
     } catch (e) {
       console.log(e);
     }
-
   }
 
   return (
     <Admin>
-      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} 
-        onClose={() => setShowModal(false)}></Modal>
+      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => setShowModal(false)}></Modal>
       <ModalReceipt show={showModalReceipt} receiptData={receiptData} />
-      <ModalSubmit show={showModalConfirm} title='Konfirmasi'
-        onClose={() => setShowModalConfirm(false)} onSubmit={() => handleBuy()}>
-        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-        </svg>
-        <h3 className="mb-7 text-lg font-bold text-black-500 dark:text-black-400">Apakah anda yaking melakukan pembelian produk ini ?</h3>
-      </ModalSubmit>
+      <ModalConfirmation show={showModalConfirm} onClose={() => setShowModalConfirm(false)} onSubmit={() => handleBuy()} 
+        text ='Apakah anda yakin melakukan pembelian produk ini ?'>
+      </ModalConfirmation>
       <div className="flex flex-wrap mt-4">
         <div className="w-full xl:w-7/12 mb-12 xl:mb-0 px-4">
-        <CardListMedicine listMedicine={listMedicine} cartToBuy={handleAddToCart}/>
+          <CardListMedicine listMedicine={listMedicine} cartToBuy={handleAddToCart}/>
         </div>
         <div className="w-full xl:w-5/12 px-4">
-          <CardBuyMedicine cartToConfirm={cartToConfirm} cartChangeQty={handleChangeQty}
-            confirmBuy={()=> setShowModalConfirm(true)} total={total} balance={balance} />
+          <CardBuyMedicine cartToConfirm={cartToConfirm} cartChangeQty={handleAddToCart}
+            confirmBuy={()=> setShowModalConfirm(true)} total={total} balance={balance} cartToRemove={handleRemoveCart} />
         </div>
       </div>
     </Admin>

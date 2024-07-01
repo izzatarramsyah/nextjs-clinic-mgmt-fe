@@ -71,7 +71,7 @@ export default function CardMedicalRecord({ isLoading, dataVisit, saveMedicalRec
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Keluhan
                       </label>
-                      <textarea placeholder="KELUHAN PASIEN" value={complaint} onChange={(e) => setComplaint(e.target.value)}
+                      <textarea placeholder="Keluhan Pasien" value={complaint} onChange={(e) => setComplaint(e.target.value)}
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                     </div>
                   </div>
@@ -83,7 +83,7 @@ export default function CardMedicalRecord({ isLoading, dataVisit, saveMedicalRec
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Diagnosa
                       </label>
-                      <textarea placeholder="DIAGNOSA PENYAKIT PASIEN" value={diagnose} onChange={(e) => setDiagnose(e.target.value)}
+                      <textarea placeholder="Diagnosa Penyakit Pasien" value={diagnose} onChange={(e) => setDiagnose(e.target.value)}
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                     </div>
                   </div>
@@ -95,7 +95,7 @@ export default function CardMedicalRecord({ isLoading, dataVisit, saveMedicalRec
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Catatan Konsultasi
                       </label>
-                      <textarea placeholder="CATATAN KONSULTASI PASIEN" value={consul} onChange={(e) => setConsul(e.target.value)}
+                      <textarea placeholder="Catatan Konsultasi Pasien" value={consul} onChange={(e) => setConsul(e.target.value)}
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                     </div>
                   </div>
@@ -107,7 +107,7 @@ export default function CardMedicalRecord({ isLoading, dataVisit, saveMedicalRec
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Resep Obat
                       </label>
-                      <textarea placeholder="RESEP OBAT" value={receiptMedicine} onChange={(e) => setReceiptMedicine(e.target.value)}
+                      <textarea placeholder="Resep Obat" value={receiptMedicine} onChange={(e) => setReceiptMedicine(e.target.value)}
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                     </div>
                   </div>

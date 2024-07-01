@@ -10,7 +10,7 @@ import CardInputDoctor from "../components/Cards/CardInputDoctor.js";
 import CardFormSearch from "../components/Cards/CardFormSearch.js";
 import CardTable from "../components/Cards/CardTable.js";
 import Modal from "../components/Modal/Modal.js";
-import ModalSubmit from "../components/Modal/ModalSubmit.js";
+import ModalForm from "../components/Modal/ModalForm.js";
 import CardInventory from "../components/Cards/CardInventory.js";
 
 // serivces
@@ -30,8 +30,15 @@ export default function Inventory() {
   };
 
   const handleAddInventory = ( request ) => {
+    const containsNull = Object.values(request).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     isLoading(true);
-    let url = trxType == 'medicine' ? `${process.env.BASE_URL}/medicine/saveMedicine` :  `${process.env.BASE_URL}/inventory/saveInventory`;
+    let url = trxType == 'medicine' ? `${process.env.BASE_URL}/medicine/saveMedicine` : `${process.env.BASE_URL}/inventory/saveInventory`;
     try { 
       restService.post(url, request ).then((response) => {
         isLoading(false);
@@ -50,9 +57,16 @@ export default function Inventory() {
     }
   }
   
+  const reloadPage = () => {
+    setShowModal(false)
+    if ( statusModal != 'Gagal' ) {
+      window.location.reload();
+    }
+  }
+  
   return (
     <Admin>
-      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => setShowModal(false)}></Modal>
+      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => reloadPage()}></Modal>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
           <CardInventory isLoading={loading} inputType={handleInputType} formData={handleAddInventory}/>

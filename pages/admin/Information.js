@@ -10,24 +10,19 @@ import CardInputDoctor from "../components/Cards/CardInputDoctor.js";
 import CardFormSearch from "../components/Cards/CardFormSearch.js";
 import CardTable from "../components/Cards/CardTable.js";
 import Modal from "../components/Modal/Modal.js";
+import ModalTable from "../components/Modal/ModalTable.js";
 
 // serivces
 import { restService } from "../../services/RestService.js";
-// import { userService } from "../../services/UserServices.js";
+import { userService } from "../../services/UserServices.js";
 
 export default function Information() {
   
   const menu = 'Pencarian Data';
   const [loading, isLoading] = useState(false);
  
-  const slcVisitingTime = [
-    { value: 'SHIFT1', text: '08:00 - 11:00'},
-    { value: 'SHIFT2', text: '13:00 - 16:00'},
-    { value: 'SHIFT3', text: '19:00 - 22:00'}
-  ];
-
   const listInformation = [
-    { text:'Inventaris Peralatan', value:'inventory', url :`${process.env.BASE_URL}/inventory/getInventory`,
+    { title:'Inventaris Peralatan', value:'inventory', url :`${process.env.BASE_URL}/inventory/getInventory`,
       parameter:[
         { value: 'name', text: 'Nama Peralatan'},
         { value: 'category', text: 'Kategori peralatan'}
@@ -39,51 +34,51 @@ export default function Information() {
             <div>{row.name}</div>
           )
         },  
-        sortable: true 
+        sortable: true , center: true 
         },
         { name: 'Kategori', width: "250px",
         cell:(row) => {
           return (
-            <div>{row.cateogry}</div>
+            <div>{row.category}</div>
           )
         },  
-        sortable: true 
+        sortable: true , center: true 
         },
-        { name: 'Jumlah Unit', width: "200px",
+        { name: 'Jumlah Unit', width: "100px",
           cell:(row) => {
             return (
               <div>{row.quantity}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         },
-        { name: 'Lokasi', width: "200px",
+        { name: 'Lokasi', width: "100px",
           cell:(row) => {
             return (
               <div>{row.location}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         },
-        { name: 'Tanggal Beli', width: "200px",
+        { name: 'Tanggal Beli', width: "100px",
           cell:(row) => {
             return (
               <div>{row.purchaseDt}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         },
-        { name: 'Keterangan', width: "200px",
+        { name: 'Keterangan', width: "150px",
           cell:(row) => {
             return (
               <div>{row.notes}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         }
       ]
     },
-    { text:'Stok Obat', value:'stockMedicine', url :`${process.env.BASE_URL}/medicine/getMedicine`,
+    { title:'Stok Obat', value:'stockMedicine', url :`${process.env.BASE_URL}/medicine/getMedicine`,
       parameter:[
         { value: 'name', text: 'Nama Obat'},
         { value: 'category', text: 'Kategori Obat'}
@@ -95,15 +90,15 @@ export default function Information() {
             <div>{row.name}</div>
           )
         },  
-        sortable: true 
+        sortable: true , center: true 
         },
         { name: 'Kategori', width: "250px",
         cell:(row) => {
           return (
-            <div>{row.cateogry}</div>
+            <div>{row.category}</div>
           )
         },  
-        sortable: true 
+        sortable: true , center: true 
         },
         { name: 'Tanggal Expired', width: "200px",
           cell:(row) => {
@@ -111,7 +106,7 @@ export default function Information() {
               <div>{row.expired}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         },
         { name: 'Jumlah Stok Masuk', width: "200px",
           cell:(row) => {
@@ -119,19 +114,19 @@ export default function Information() {
               <div>{row.quantity}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         },
-        { name: 'Keterangan', width: "200px",
+        { name: 'Keterangan', width: "250px",
           cell:(row) => {
             return (
               <div>{row.notes}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         }
       ]
     },
-    { text:'Data Dokter', value:'dataDocter', url: `${process.env.BASE_URL}/doctor/getDoctor`,
+    { title:'Data Dokter', value:'dataDocter', url: `${process.env.BASE_URL}/doctor/getDoctor`,
       parameter:[
         { value: 'fullname', text: 'Nama Dokter'},
         { value: 'nip', text: 'Nomor Induk Pegawai'}
@@ -143,15 +138,15 @@ export default function Information() {
             <div>{row.nip}</div>
           )
         },  
-        sortable: true 
+        sortable: true , center: true 
         },
         { name: 'Nama', width: "250px",
         cell:(row) => {
           return (
-            <div>{row.name}</div>
+            <div>{row.fullname}</div>
           )
         },  
-        sortable: true 
+        sortable: true , center: true 
         },
         { name: 'Spesialisasi', width: "200px",
           cell:(row) => {
@@ -159,27 +154,20 @@ export default function Information() {
               <div>{row.specialization}</div>
             )
           }, 
-          sortable: true 
+          sortable: true , center: true 
         },
         { name: 'Waktu Kunjungan', width: "400px",
           cell:(row) => {
-            let itemsArray = row.visitingTime.split(', ').map(item => item.trim());
-            let visitTime = [];
-            for (const item of itemsArray) {
-              const index = slcVisitingTime.findIndex(slcVisitingTime => slcVisitingTime.value === item);
-              visitTime.push(slcVisitingTime[index].text);
-            }
             return (
-              <button onClick={()=> detailVisitingTime(visitTime)}
+              <button onClick={()=> onScheduleDetail(row.schedule)}
                 className="text-blue-500 no-underline hover:underline"> Detail
               </button> 
             )
-          },sortable: true 
+          },sortable: true , center: true 
         }
       ]
     },
-    {
-      text:'Data Pasien', value:'dataPatient',url: `${process.env.BASE_URL}/patient/getPatient`,
+    { title:'Data Pasien', value:'dataPatient',url: `${process.env.BASE_URL}/patient/getPatient`,
       parameter:[
         { value: 'fullname', text: 'Nama Pasien'},
         { value: 'bpjsNo', text: 'Nomor BPJS'}
@@ -220,8 +208,7 @@ export default function Information() {
         }
       ]
     },
-    {
-      text: 'Riwayat Kunjungan', value:'visitHistory',url: `${process.env.BASE_URL}/visitHistory/getHistory`,
+    { title: 'Riwayat Kunjungan', value:'visitHistory',url: `${process.env.BASE_URL}/visitHistory/getHistory`,
       parameter:[
         { value: 'fullname', text: 'Nama Pasien'},
         { value: 'bpjsNo', text: 'Nomor BPJS'}
@@ -262,9 +249,9 @@ export default function Information() {
           { name: 'Status', width: "200px",
             cell:(row) => {
               let status = 'Menunggu Antrian';
-              if ( row.status == 'cancel' ) {
+              if ( row.status == 'CANCEL' ) {
                 status = 'Di Batalkan';
-              } else if ( row.status == 'finished' ) {
+              } else if ( row.status == 'FINISHED' ) {
                 status = 'Selesai';
               }
               return (
@@ -292,6 +279,31 @@ export default function Information() {
   const [headerTable, setHeaderTable] = useState([]);
   const [columnTable, setColumnTable] = useState([]);
 
+  const [showDetailShift, setShowDetailShift] = useState(false);
+
+  const headerDetailShift = [
+    { name: 'Hari', width: "150px",
+      cell:(row) => {
+        return (
+          <div>{row.day}</div>
+        )
+      }, sortable: true, center: true
+    },
+    { name: 'Waktu Kunjungan', width: "300px",
+    cell:(row) => {
+      return (
+        <div>{row.shift}</div>
+      )
+    }, sortable: true, center: true
+  }
+  ];
+  const [columnDetailShift, setColumnDetailShift] = useState([]);
+
+  const onScheduleDetail = ( data ) => {
+    setColumnDetailShift(data);
+    setShowDetailShift(true);
+  }
+
   const handleChangeData = (value) => {
     const index = listInformation.findIndex(listInformation => listInformation.value === value);
     setParameter(listInformation[index].parameter);
@@ -300,9 +312,11 @@ export default function Information() {
   }
 
   const handleSearch = (request) => {
+    isLoading(true);
     try { 
       restService.post(url, request).then((response) => {
         if ( response.status == '200' ) {
+          isLoading(false);
           setColumnTable(response.data.object)
         } 
       });
@@ -313,6 +327,8 @@ export default function Information() {
 
   return (
     <Admin>
+      <ModalTable show={showDetailShift} headerDetail={headerDetailShift} 
+        columnDetail={columnDetailShift} onClose={() => setShowDetailShift(false)}></ModalTable>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
           <CardFormSearch menu={menu} parameter={parameter} listInformation={listInformation}

@@ -2,22 +2,24 @@ import {useState, React} from 'react'
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function CardInputPatient({ handleSave, slcGender, isLoading }) {
+export default function CardInputPatient({ handleSave, isLoading }) {
 
-    const [name, setName] = useState('');
-    const [bpjs, setBpjs] = useState('');
-    const [gender, setGender] = useState('');
-    const [email, setEmail] = useState('');
-    const [birthDate, setBirthDate] = useState(new Date());
+  const [fullname, setFullname] = useState('');
+  const [bpjs, setBpjs] = useState('');
+  const [gender, setGender] = useState('');
+  const [email, setEmail] = useState('');
+  const [phoneNo, setPhoneNo] = useState('');
+  const [birthDate, setBirthDate] = useState(new Date());
 
   const doSave = async(e) => {
     e.preventDefault();
     handleSave({
-        name : name,
+        fullname : fullname,
         bpjs : bpjs,
         gender : gender,
         email : email,
-        birthDate : birthDate
+        birthDate : birthDate,
+        phoneNo : phoneNo
     });
   }
 
@@ -38,7 +40,7 @@ export default function CardInputPatient({ handleSave, slcGender, isLoading }) {
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Nama Pasien
                       </label>
-                      <input placeholder="Nama Pasien" value={name} onChange={(e) => setName(e.target.value)}
+                      <input placeholder="Nama Pasien" value={fullname} onChange={(e) => setFullname(e.target.value)}
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                     </div>
                   </div>
@@ -51,25 +53,11 @@ export default function CardInputPatient({ handleSave, slcGender, isLoading }) {
                       </label>
                       <select onChange={(e)=> setGender(e.target.value)} defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
-                        {slcGender?.map(option => (
-                          <option key={option.value} value={option.value} disabled={option.isDisabled}>
-                            {option.text}
-                          </option>
-                        ))}
+                        <option key='none' value='none' disabled='true'>-- Silahkan Pilih--</option>
+                        <option key='pria' value='pria'>Pria</option>
+                        <option key='wanita' value='wanita'>Wanita</option>
                       </select>
                     </div>
-                </div>
-                <div className="flex flex-wrap ">
-                  <div className="w-full lg:w-12/12 px-4">
-                    <div className="relative w-full mb-6">
-                      <label
-                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password" > BPJS NO
-                      </label>
-                      <input placeholder="BPJS NO" value={bpjs} onChange={(e) => setBpjs(e.target.value)}
-                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
-                    </div>
-                  </div>
                 </div>
                 <div className="flex flex-wrap ">
                   <div className="w-full lg:w-12/12 px-4">
@@ -88,9 +76,33 @@ export default function CardInputPatient({ handleSave, slcGender, isLoading }) {
                     <div className="relative w-full mb-6">
                       <label
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password" > BPJS NO
+                      </label>
+                      <input placeholder="BPJS NO" value={bpjs} onChange={(e) => setBpjs(e.target.value)}
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap ">
+                  <div className="w-full lg:w-12/12 px-4">
+                    <div className="relative w-full mb-6">
+                      <label
+                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Email
                       </label>
                       <input placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)}
+                        className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-wrap ">
+                  <div className="w-full lg:w-12/12 px-4">
+                    <div className="relative w-full mb-6">
+                      <label
+                        className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
+                        htmlFor="grid-password" > Nomor Telepon
+                      </label>
+                      <input placeholder="Nomor Telepon" value={phoneNo} onChange={(e) => setPhoneNo(e.target.value)}
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                     </div>
                   </div>

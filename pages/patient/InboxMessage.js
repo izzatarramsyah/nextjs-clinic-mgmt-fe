@@ -35,19 +35,21 @@ export default function InboxMessage() {
   },[]);
 
   const handleSendMessage = (data) => {
+    isLoading(true);
     const req = {
         from: userService.userValue.username,
         to: doctor,
         message: data.message
     }
     restService.post(`${process.env.BASE_URL}/message/saveMessage`, req ).then((response) => {
-        if ( response.status == '200' ) {
-          
-        }
+      isLoading(false);
+      if ( response.status == '200' ) {
+        setListMessage([...listMessage, response.data.object]);
+      }
     });
   }
 
-  const handleChangeparam = (value) => {
+  const changeDoctor = (value) => {
     setDoctor(value);
     try { 
       const request = {
@@ -55,6 +57,7 @@ export default function InboxMessage() {
         to: value
       }
       restService.post(`${process.env.BASE_URL}/message/getListMessage`, request ).then((response) => {
+        debugger;
         if ( response.status == '200') { 
           setListMessage(response.data.object)
         } 
@@ -63,13 +66,14 @@ export default function InboxMessage() {
       console.log(e);
     }
   }
+  
 
   return (
     <Admin>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
            <CardInboxMessage isLoading={loading} slcParameter={slcDoctor} listMessage={listMessage}
-            handleChangeparam={handleChangeparam} sendMessage={handleSendMessage} />
+            changeDoctor={changeDoctor} sendMessage={handleSendMessage} />
         </div>
       </div>
     </Admin>

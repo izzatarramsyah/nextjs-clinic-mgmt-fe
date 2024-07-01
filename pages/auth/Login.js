@@ -13,16 +13,12 @@ export default function Login() {
 
   const [loading, isLoading] = useState(false);
 
-  const handleLogin = (data) => {
+  const handleLogin = (request) => {
     isLoading(true);
     try {
-      const request = {
-        username: data.username,
-        password: data.password,
-      };
       userService.login(request).then((response) => {
         if ( response.status == '200' ) {
-          Router.push('/home/dashboard');
+          Router.push('/dashboard/QueueInformation');
         }
       });
     } catch (error) {

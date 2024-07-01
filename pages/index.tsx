@@ -13,7 +13,7 @@ export default function Home() {
   return (
     useEffect(() => {
       if (!userService.userValue) {
-        router.push('/home/dashboard');
+        router.push('/dashboard/QueueInformation');
       } else {
         router.push('/auth/Login');
       }

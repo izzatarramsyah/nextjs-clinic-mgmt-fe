@@ -45,7 +45,7 @@ export default function InboxMessage() {
     });
   }
 
-  const handleChangeparam = (value) => {
+  const changeDoctor = (value) => {
     try { 
       const request = {
         from: userService.userValue.username,
@@ -66,7 +66,7 @@ export default function InboxMessage() {
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
            <CardInboxMessage isLoading={loading} slcParameter={slcPatient} listMessage={listMessage}
-            handleChangeparam={handleChangeparam} sendMessage={handleSendMessage} />
+            changeDoctor={changeDoctor} sendMessage={handleSendMessage} />
         </div>
       </div>
     </Admin>

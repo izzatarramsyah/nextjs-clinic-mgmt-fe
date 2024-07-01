@@ -4,6 +4,20 @@ import "react-datepicker/dist/react-datepicker.css";
 
 export default function CardInputQueue({ isLoading, slcDoctor, dataPatient, addQueue }) {
 
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(today.getDate() + 1);
+  const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+  const convertDays = [
+    { eng : "Sunday", ind : 'Minggu'}, 
+    { eng : "Monday", ind : 'Senin'},
+    { eng : "Tuesday", ind : 'Selasa'},
+    { eng : "Wednesday", ind : 'Rabu'},
+    { eng : "Thursday", ind : 'Kamis'},
+    { eng : "Friday", ind : 'Jumat'},
+    { eng : "Saturday", ind : 'Sabtu'}
+  ];
+
   const [doctorName, setDoctorName] = useState('');
   const [complaint, setComplaint] = useState('');
   const [visitingTime, setVisitingTime] = useState('');
@@ -14,66 +28,54 @@ export default function CardInputQueue({ isLoading, slcDoctor, dataPatient, addQ
   const [slcVisitingDay, setSlcVisitingDay] = useState([]);
   const [slcVisitingShift, setSlcVisitingShift] = useState([]);
 
-  const slcSpecialization = [
-    { value: 'general', text: 'UMUM' },
-    { value: 'dentist', text: 'GIGI', },
-    { value: 'pediatric', text: 'IBU DAN ANAK', }
-  ];
-
-  const slcDays = [
-    { value: 'monday', text: 'Senin'},
-    { value: 'tuesday', text: 'Selasa'},
-    { value: 'wednesday', text: 'Rabu'},
-    { value: 'thursday', text: 'Kamis'},
-    { value: 'friday', text: 'Jumat'},
-    { value: 'saturday', text: 'Sabtu'},
-    { value: 'sunday', text: 'Minggu'}
-  ];
-
-  const slcShift = [
-    { value: 'SHIFT1', text: '08:00 - 11:00'},
-    { value: 'SHIFT2', text: '13:00 - 16:00'},
-    { value: 'SHIFT3', text: '19:00 - 22:00'}
-  ];
-
   const handleaddQueue = async(e) => {
     e.preventDefault();
-    let foundSpecialization = slcSpecialization.find(d => d.text === specialization);
     addQueue({
       complaint: complaint,
       doctorName: doctorName,
-      specialization: foundSpecialization.value,
+      poli: specialization,
       visitingShift: visitingShift,
       visitingDay: visitingDay
     });
   }
 
-  const handleSlcDoctor = async(id) => {
+  const onChangeDoctor = async(id) => {
     const index = slcDoctor.findIndex(item => item._id === id);
     setDoctorName(slcDoctor[index].fullname);
-    let foundSpecialization = slcSpecialization.find(d => d.value === slcDoctor[index].specialization);
-    setSpecialization(foundSpecialization.text);
-    setVisitingTime(slcDoctor[index].visitingTime);
-    const tempSlcVisitingDay = [...slcVisitingDay];
-    slcDoctor[index].visitingTime.forEach(item => {
-      let foundDay = slcDays.find(d => d.value === item.day);
-      tempSlcVisitingDay.push(foundDay);
-    });
-    setSlcVisitingDay(tempSlcVisitingDay);
-
+    setSpecialization(slcDoctor[index].specialization);
+    setVisitingTime(slcDoctor[index].schedule);
+    debugger;
+    const currentDay = convertDays.find(d => d.eng === daysOfWeek[today.getDay()]);
+    const nextDay =  convertDays.find(d => d.eng === daysOfWeek[tomorrow.getDay()]);
+    let days = [];
+    for (const item of slcDoctor[index].schedule) {
+      if ( currentDay.ind == item.day || nextDay.ind == item.day ) {
+        days.push(item.day);
+      }
+    }
+    setSlcVisitingDay(days);
   }
 
-  const handleSlcVisitingDay = async(day) => {
-    let foundVisitingTime = visitingTime.find(d => d.day === day);
-    let itemsArray = foundVisitingTime.shift.split(', ').map(item => item.trim());
-    let selection = [];
-    for (const item of itemsArray) {
-      let foundShift = slcShift.find(d => d.value === item);
-      selection.push(foundShift);
-    }
-    console.log(selection)
-    setSlcVisitingShift(selection);
+  const onChangeVisitingDay = async(day) => {
     setVisitingDay(day);
+    let foundVisitingTime = visitingTime.find(d => d.day === day);
+    const currentDay = convertDays.find(d => d.eng === daysOfWeek[today.getDay()]);
+    let itemsArray = foundVisitingTime.shift.split(', ').map(item => item.trim());
+    const currentHours = today.getHours();
+    const currentMinutes = today.getMinutes();
+    let shift = [];
+    for (const item of itemsArray) {
+      if ( foundVisitingTime.day == currentDay.ind ) {
+        let targetHours = item.substring(8, 10);
+        let targetMinutes = item.substring(11, 14); 
+        if (currentHours < targetHours || (currentHours === targetHours && currentMinutes < targetMinutes)) {
+          shift.push(item);
+         }
+      } else {
+        shift.push(item);
+      }
+    }
+    setSlcVisitingShift(shift);
   }
 
   return (
@@ -130,7 +132,7 @@ export default function CardInputQueue({ isLoading, slcDoctor, dataPatient, addQ
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Dokter
                       </label>
-                      <select onChange={(e)=> handleSlcDoctor(e.target.value)} defaultValue="none"
+                      <select onChange={(e)=> onChangeDoctor(e.target.value)} defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                         <option value='none' disabled>-- Silahkan Pilih --</option>
                         {slcDoctor?.map(option => (
@@ -143,7 +145,7 @@ export default function CardInputQueue({ isLoading, slcDoctor, dataPatient, addQ
                     <div className="relative w-3/12 mb-6">
                       <label
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
-                        htmlFor="grid-password" > Spesialisasi
+                        htmlFor="grid-password" > Poli
                       </label>
                       <input placeholder="Spesialisasi" value={specialization} disabled
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
@@ -153,13 +155,11 @@ export default function CardInputQueue({ isLoading, slcDoctor, dataPatient, addQ
                         className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                         htmlFor="grid-password" > Hari
                       </label>
-                      <select onChange={(e)=> handleSlcVisitingDay(e.target.value)} defaultValue="none"
+                      <select onChange={(e)=> onChangeVisitingDay(e.target.value)} defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                         <option value='none' disabled>-- Silahkan Pilih --</option>
-                        {slcVisitingDay?.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.text}
-                          </option>
+                        {slcVisitingDay?.map(value => (
+                          <option key={value} value={value}> {value} </option>
                         ))}
                       </select>
                     </div>
@@ -171,10 +171,8 @@ export default function CardInputQueue({ isLoading, slcDoctor, dataPatient, addQ
                       <select onChange={(e)=> setVisitingShift(e.target.value)} defaultValue="none"
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                         <option value='none' disabled>-- Silahkan Pilih --</option>
-                        {slcVisitingShift?.map(option => (
-                          <option key={option.value} value={option.value}>
-                            {option.text}
-                          </option>
+                        {slcVisitingShift?.map(value => (
+                          <option key={value} value={value}> {value} </option>
                         ))}
                       </select>
                     </div>

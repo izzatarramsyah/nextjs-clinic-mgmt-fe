@@ -6,7 +6,7 @@ export default function Auth ({ children }) {
     <div>
       <Head>
         <title>Clinic Dummy</title>
-        <link rel="icon" href="/img/thumbnail/logo-home.png" />
+        {/* <link rel="icon" href="/img/thumbnail/logo-home.png" /> */}
       </Head>
       <div className="min-h-screen bg-gray-100 flex flex-col justify-center py-12 px-6 lg:px-8">
         {children}

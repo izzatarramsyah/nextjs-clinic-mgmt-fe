@@ -14,7 +14,6 @@ export const userService = {
     user: userSubject.asObservable(),
     get userValue () { return userSubject.value },
     login,
-    register,
     logout
 };
 
@@ -29,16 +28,6 @@ function login(request) {
                 localStorage.setItem('user', JSON.stringify(decoded));
                 setCookie('refreshToken', response.data.refreshToken);
             }
-        return response;
-    });
-}
-
-function register( request ){
-    return axios.post(`${process.env.BASE_URL}/users/register`, Aes256.encryptUsingAES256(JSON.stringify(request)), {
-        headers: {
-            'Content-Type': 'text/plain',
-        }}).then((response) => {
-            console.log(JSON.stringify(response))
         return response;
     });
 }

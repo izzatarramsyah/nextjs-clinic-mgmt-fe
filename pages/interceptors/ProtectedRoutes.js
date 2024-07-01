@@ -10,7 +10,7 @@ const ProtectedRoute = ({ router, pathname, children }) => {
   
   let unprotectedRoutes = [
     '/auth/Login',
-    '/auth/Register'
+    '/user/Registration'
   ];
 
   let pathIsProtected = unprotectedRoutes.indexOf(pathname) === -1;
@@ -20,7 +20,7 @@ const ProtectedRoute = ({ router, pathname, children }) => {
   }
 
   if (isBrowser() && isAuthenticated && !pathIsProtected) {
-    router.push('/home/dashboard');
+    router.push('/dashboard/QueueInformation');
   }
   
   return children;

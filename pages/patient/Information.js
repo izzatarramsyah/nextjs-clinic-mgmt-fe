@@ -21,13 +21,8 @@ export default function Information() {
 
   const [loading, isLoading] = useState(false);
  
-  const listDataType = [
-    { value: 'buyMedicine', text:'Pembelian Obat' },
-    { value: 'visitRecord', text:'Riwayat Kunjungan'}
-  ];
-  
   const listInformation = [
-    { title:'Pembelian Obat', url :`${process.env.BASE_URL}/purchase/history`,
+    { title:'Pembelian Obat', value: 'buyMedicine', url :`${process.env.BASE_URL}/purchase/history`,
       parameter:[
         { value: 'date', text: 'Tanggal Pembelian'}
       ],  
@@ -40,10 +35,26 @@ export default function Information() {
           }, 
           sortable: true, center: true
         },
-        { name: 'Total Beli', width: "300px",
+        { name: 'Nama Obat', width: "300px",
           cell:(row) => {
             return (
-              <div>{row.totalBuy}</div>
+              <div>{row.medicineName}</div>
+            )
+          }, 
+          sortable: true, center: true
+        },
+        { name: 'Harga Satuan', width: "150px",
+          cell:(row) => {
+            return (
+              <div>Rp. {row.price}</div>
+            )
+          }, 
+          sortable: true, center: true
+        },
+        { name: 'Jumlah', width: "150px",
+          cell:(row) => {
+            return (
+              <div>{row.quantity}</div>
             )
           }, 
           sortable: true, center: true
@@ -56,21 +67,11 @@ export default function Information() {
             )
           }, 
           sortable: true, center: true
-        },
-        { name: 'Detail Pembelian', width: "300px",
-          cell:(row) => {
-            return (
-              <button onClick={()=> detailPurchase(row.listMedicine)}
-                className="text-blue-500 no-underline hover:underline"> Detail
-              </button> 
-            )
-          }, 
-          sortable: true, center: true
         }
       ]
     },
     {
-      title: 'Riwayat Kunjungan', url: `${process.env.BASE_URL}/visitHistory/getHistory`,
+      title: 'Riwayat Kunjungan',  value: 'visitRecord', url: `${process.env.BASE_URL}/visitHistory/getHistory`,
       parameter:[
         { value: 'date', text: 'Tanggal Kunjungan'}
       ],
@@ -110,9 +111,9 @@ export default function Information() {
           { name: 'Status', width: "200px",
             cell:(row) => {
               let status = 'Menunggu Antrian';
-              if ( row.status == 'cancel' ) {
+              if ( row.status == 'CANCEL' ) {
                 status = 'Di Batalkan';
-              } else if ( row.status == 'finished' ) {
+              } else if ( row.status == 'FINISHED' ) {
                 status = 'Selesai';
               }
               return (
@@ -134,54 +135,13 @@ export default function Information() {
     }
   ];
 
-  const headerDetailPurchase = [
-    { name: 'Nama Obat', width: "150px",
-      cell:(row) => {
-        return (
-          <div>{row.medicineName}</div>
-        )
-      }, sortable: true, center: true
-    },
-    { name: 'Harga Satuan', width: "140px",
-        cell:(row) => {
-        return (
-            <div>{row.price}</div>
-        )
-        }, sortable: true, center: true
-    },
-    { name: 'Jumlah', width: "100px",
-        cell:(row) => {
-        return (
-            <div>{row.quantity}</div>
-        )
-        }, sortable: true, center: true
-    },
-    { name: 'Total Pembelian', width: "100px",
-        cell:(row) => {
-        return (
-            <div>{row.ttlBuy}</div>
-        )
-        }, sortable: true, center: true
-    },
-  ];
-  const [columnDetailPurchase, setColumnDetailPurchase] = useState([]);
-
-  const detailPurchase = (data) => {
-    setShowDetailPurchase(true);
-    setColumnDetailPurchase(data);
-  }
-
   const [url, setUrl] = useState('');
   const [parameter, setParameter] = useState([]);
   const [headerTable, setHeaderTable] = useState([]);
   const [columnTable, setColumnTable] = useState([]);
 
-  const [showDetailPurchase, setShowDetailPurchase] = useState(false);
-
-  const handleChangeData = (data) => {
-    const val = listDataType.filter(({value}) => value == data);
-    const title = val[0].text;
-    const index = listInformation.findIndex(listInformation => listInformation.title === title);
+  const handleChangeData = (value) => {
+    const index = listInformation.findIndex(listInformation => listInformation.value === value);
     setParameter(listInformation[index].parameter);
     setHeaderTable(listInformation[index].headerTable);
     setUrl(listInformation[index].url);
@@ -190,7 +150,9 @@ export default function Information() {
   const handleSearch = (request) => {
     isLoading(true);
     try { 
+      console.log(request)
       restService.post(url, request).then((response) => {
+        console.log(response)
         isLoading(false);
         if ( response.status == '200' ) {
           setColumnTable(response.data.object)
@@ -203,12 +165,10 @@ export default function Information() {
 
   return (
     <Admin>
-      <ModalTable show={showDetailPurchase} headerDetail={headerDetailPurchase} 
-        columnDetail={columnDetailPurchase} onClose={() => setShowDetailPurchase(false)}></ModalTable>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
-          <CardFormSearch menu={menu} parameter={parameter} listDataType={listDataType}
-            dataType={handleChangeData} handleSearch={handleSearch} isLoading={loading} />
+          <CardFormSearch menu={menu} parameter={parameter} listInformation={listInformation}
+            changeData={handleChangeData} handleSearch={handleSearch} isLoading={loading} />
         </div>
         <div className="w-full mb-12 px-4">
           <CardTable headerTable={headerTable} columnTable={columnTable} />

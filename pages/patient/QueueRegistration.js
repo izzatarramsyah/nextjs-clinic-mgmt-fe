@@ -1,5 +1,6 @@
 import {useState, useEffect, React} from 'react'
 import moment from 'moment';
+import socket from '../../lib/socket.js';
 
 // layout for page
 import Admin from "../layouts/Admin.js";
@@ -17,8 +18,13 @@ import { userService } from "../../services/UserServices.js";
 export default function QueueRegistration() {
   
   const menu = 'Daftar Antrian';
+
   const [loading, isLoading] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
+  const [statusModal, setStatusModal] = useState(null);
+  const [messageModal, setMessageModal] = useState(null);
+
   const [showModalQueue, setShowModalQueue] = useState(false);
 
   const [dataPatient, setDataPatient] = useState({
@@ -34,30 +40,14 @@ export default function QueueRegistration() {
     visitingTime: ''
   });
 
-  const slcDays = [
-    { value: 'monday', text: 'Senin'},
-    { value: 'tuesday', text: 'Selasa'},
-    { value: 'wednesday', text: 'Rabu'},
-    { value: 'thursday', text: 'Kamis'},
-    { value: 'friday', text: 'Jumat'},
-    { value: 'saturday', text: 'Sabtu'},
-    { value: 'sunday', text: 'Minggu'}
-  ];
-
-  const slcVisitingTime = [
-    { value: 'SHIFT1', text: '08:00 - 11:00'},
-    { value: 'SHIFT2', text: '13:00 - 16:00'},
-    { value: 'SHIFT3', text: '19:00 - 22:00'}
-  ];
-
   const [slcDoctor, setSlcDoctor] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const request = {
-          param : 'email',
-          value: userService.userValue.email
+          param : 'fullname',
+          value: 'Alex'
         }
         const response = await Promise.all([
           restService.get(`${process.env.BASE_URL}/doctor/getListDoctor`),
@@ -76,27 +66,48 @@ export default function QueueRegistration() {
     fetchData();
   },[]);
   
-  const addQueue = (data) => {
+  const addQueue = (req) => {
+    const containsNull = Object.values(req).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     isLoading(true);
     try { 
       const request = {
         patientName: dataPatient.fullname,
         bpjsNo: dataPatient.bpjs,
-        doctorName: data.doctorName,
-        complaint: data.complaint,
-        specialization: data.specialization,
-        visitingDay: data.visitingDay,
-        visitingShift: data.visitingShift
+        doctorName: req.doctorName,
+        complaint: req.complaint,
+        poli: req.poli,
+        visitingDay: req.visitingDay,
+        visitingShift: req.visitingShift
       }
       restService.post(`${process.env.BASE_URL}/visitHistory/saveVisitHistory`, request ).then((response) => {
         isLoading(false);
         if ( response.status == '200') {
-          let foundVisitingTime = slcVisitingTime.find(d => d.value === response.data.object.visitingShift);
-          let foundDoctor = slcDoctor.find(d => d.name === response.data.object.doctorName);          
+          const reqQueue = {
+            fullname: response.data.object.patientName,
+            ticketNo: response.data.object.ticketNo,
+            sequence: response.data.object.sequence,
+            poli : response.data.object.poli,
+            status: response.data.object.status
+          }
+          if ( response.data.object.ticketNo == '001' ) {
+            if ( response.data.object.poli === 'UMUM' ){
+              socket.emit('add_to_general', reqQueue);
+            } else if ( response.data.object.poli === 'GIGI' ) {
+              socket.emit('add_to_dentist', reqQueue);
+            } else if ( response.data.object.poli === 'IBU DAN ANAK' ) {
+              socket.emit('add_to_pediatric', reqQueue);
+            }
+          } 
           setDataQueue({
             ticketNo: response.data.object.ticketNo,
-            specialization: 'Dokter ' + foundDoctor.specialization,
-            visitingTime: 'Waktu Kunjungan : ' + foundVisitingTime.text
+            poli: 'Dokter ' + response.data.object.poli,
+            visitingTime: 'Waktu Kunjungan : ' + response.data.object.visitingShift
           });
           setShowModalQueue(true);
         } 
@@ -106,13 +117,21 @@ export default function QueueRegistration() {
     }
   }
 
+  const reloadPage = () => {
+    setShowModal(false);
+    setShowModalQueue(false);
+    // if ( statusModal != 'Gagal' ) {
+    //   window.location.reload();
+    // }
+  }
+
   return (
     <Admin>
-      <Modal show={showModal} onClose={() => setShowModal(false)}></Modal>
-      <ModalQueue show={showModalQueue} dataQueue={dataQueue} onClose={() => setShowModalQueue(false)}></ModalQueue>
+      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => reloadPage()}></Modal>
+      <ModalQueue show={showModalQueue} dataQueue={dataQueue} onClose={() => reloadPage()}></ModalQueue>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
-          <CardInputQueue isLoading={loading} slcDoctor={slcDoctor} dataPatient={dataPatient} addQueue={addQueue} />
+          <CardInputQueue isLoading={loading} slcDoctor={slcDoctor} dataPatient={dataPatient} addQueue={addQueue}/>
         </div>
       </div>
     </Admin>

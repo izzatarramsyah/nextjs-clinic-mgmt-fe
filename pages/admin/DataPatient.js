@@ -9,7 +9,8 @@ import Admin from "../layouts/Admin.js";
 import CardInputPatient from "../components/Cards/CardInputPatient.js";
 import CardTable from "../components/Cards/CardTable.js";
 import Modal from "../components/Modal/Modal.js";
-import ModalSubmit from "../components/Modal/ModalSubmit.js";
+import ModalForm from "../components/Modal/ModalForm.js";
+import ModalConfirmation from "../components/Modal/ModalConfirmation.js";
 
 // serivces
 import { restService } from "../../services/RestService.js";
@@ -18,19 +19,14 @@ import { restService } from "../../services/RestService.js";
 export default function DataPatient() {
   
   const menu = 'Data Pasien';
-  const slcGender = [
-    { value: 'none', text: '-- Silahkan Pilih --', isDisabled : true },
-    { value: 'M', text: 'PRIA', isDisabled : false },
-    { value: 'W', text: 'WANITA', isDisabled : false }
-  ];
+
   const [loading, isLoading] = useState(false);
+
   const [showModal, setShowModal] = useState(false);
   const [statusModal, setStatusModal] = useState(null);
   const [messageModal, setMessageModal] = useState(null);
 
   const [showModalDelete, setShowModalDelete] = useState(false);
-  const [messageModalDelete, setMessageModalDelete] = useState(null);
-
   const [showModalEdit, setShowModalEdit] = useState(false);
 
   const [id, setId] = useState(null);
@@ -38,10 +34,11 @@ export default function DataPatient() {
   const [gender, setGender] = useState(null);
   const [bpjs, setBpjs] = useState(null);
   const [email, setEmail] = useState(null);
+  const [phoneNo, setPhoneNo] = useState(null);
   const [birthDate, setBirthDate] = useState(new Date());
 
   const headerTable = [
-    { name: 'Nama', width: "250px",
+    { name: 'Nama', width: "200px",
     cell:(row) => {
       return (
         <div>{row.fullname}</div>
@@ -49,16 +46,16 @@ export default function DataPatient() {
     },  
     sortable: true, center: true
     },
-    { name: 'Jenis Kelamin', width: "250px",
+    { name: 'Jenis Kelamin', width: "200px",
       cell:(row) => {
         var gender = row.gender;
         return (
-          gender == "P" ? <div> Pria </div> : <div> Wanita </div>
+          gender == "pria" ? <div> Pria </div> : <div> Wanita </div>
         )
       }, 
       sortable: true, center: true 
     },
-    { name: 'Tanggal Lahir', width: "300px",
+    { name: 'Tanggal Lahir', width: "180px",
       cell:(row) => {
         let birthDate = moment(row.birthDate).format('DD-MM-YYYY hh:mm:ss');
         return (
@@ -67,10 +64,24 @@ export default function DataPatient() {
       }, 
       sortable: true, center: true 
     },
-    { name: 'BPJS', width: "300px",
+    { name: 'BPJS', width: "200px",
       cell:(row) => {
         return (
           <div>{row.bpjs}</div>
+        )
+      },sortable: true, center: true 
+    },
+    { name: 'Nomor Telepon', width: "200px",
+      cell:(row) => {
+        return (
+          <div>{row.phoneNo}</div>
+        )
+      },sortable: true, center: true 
+    },
+    { name: 'Email', width: "200px",
+      cell:(row) => {
+        return (
+          <div>{row.email}</div>
         )
       },sortable: true, center: true 
     },
@@ -100,20 +111,19 @@ export default function DataPatient() {
     loadDataPatient();
   },[]);
 
-  const handleSave = ( data ) => {
+  const handleSave = ( request ) => {
+    const containsNull = Object.values(request).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     isLoading(true);
     try { 
-      const request = {
-        fullname : data.name,
-        nik : data.nik,
-        bpjs : data.bpjs,
-        email : data.email,
-        gender : data.gender,
-        birthDate : data.birthDate
-      }
       restService.post(`${process.env.BASE_URL}/patient/savePatient`, request ).then((response) => {
         isLoading(false);
-        if ( response.data.status == '200' ) {
+        if ( response.status == '200' ) {
           setShowModal(true);
           setStatusModal('Sukses')
           setMessageModal('Data pasien telah ditambahkan');
@@ -131,7 +141,6 @@ export default function DataPatient() {
   const handleDeletePatient = (e, row) => {
     e.preventDefault();
     setId(row._id)
-    setMessageModalDelete("Apakah anda yakin menghapus data ini ? ");
     setShowModalDelete(true);
   };
 
@@ -141,7 +150,7 @@ export default function DataPatient() {
         id : id
       }
       restService.post(`${process.env.BASE_URL}/patient/deletePatient`, request ).then((response) => {
-        setShowModalSubmit(false);
+        setShowModalDelete(false);
         if ( response.status == '200' ) {
           setShowModal(true);
           setStatusModal('Sukses')
@@ -165,10 +174,18 @@ export default function DataPatient() {
     setBpjs(row.bpjs);
     setEmail(row.email);
     setBirthDate(row.birthDate)
+    setPhoneNo(row.phoneNo);
     setShowModalEdit(true);
   };
 
   const editPatient = () => {
+    const containsNull = Object.values(request).some(value => value === null || value === '');
+    if (containsNull) {
+      setShowModal(true);
+      setStatusModal('Gagal')
+      setMessageModal('Silahkan lengkapi form terlebih dahulu');
+      return;
+    }
     try { 
       const request = {
         id : id,
@@ -176,10 +193,11 @@ export default function DataPatient() {
         bpjs : bpjs,
         gender : gender,
         email : email,
-        birthDate : birthDate
+        birthDate : birthDate,
+        phoneNo : phoneNo
       }
       restService.post(`${process.env.BASE_URL}/patient/updatePatient`, request ).then((response) => {
-        setShowModalSubmit(false);
+        setShowModalForm(false);
         if ( response.status == '200' ) {
           setShowModal(true);
           setStatusModal('Sukses')
@@ -195,40 +213,35 @@ export default function DataPatient() {
     }
   }
 
+  const reloadPage = () => {
+    setShowModal(false)
+    if ( statusModal != 'Gagal' ) {
+      window.location.reload();
+    }
+  }
+
   return (
     <Admin>
-      <Modal show={showModal} statusModal={statusModal} 
-        messageModal={messageModal} onClose={() => setShowModal(false)}></Modal>
-      <ModalSubmit show={showModalDelete} title='Konfirmasi'
-        onClose={() => setShowModalDelete(false)} onSubmit={() => deletePatient()}>
-        <svg className="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-          <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 11V6m0 8h.01M19 10a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"/>
-        </svg>
-        <h3 className="mb-7 text-lg font-bold text-black-500 dark:text-black-400">{messageModalDelete}</h3>
-      </ModalSubmit>
-      <ModalSubmit show={showModalEdit} title='Ubah Data Pasien'
+      <Modal show={showModal} statusModal={statusModal} messageModal={messageModal} onClose={() => reloadPage()}></Modal>
+      <ModalConfirmation show={showModalDelete} onClose={() => setShowModalDelete(false)} onSubmit={() => deletePatient()} 
+        text ='Apakah anda yakin menghapus data ini ?'>
+      </ModalConfirmation>
+      <ModalForm show={showModalEdit} title='Ubah Data Pasien'
         onClose={() => setShowModalEdit(false)} onSubmit={() => editPatient()}>
         <div class="grid gap-4 mb-4 grid-cols-2">
           <div class="col-span-2">
             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nama Pasien</label>
-            <input value={name} onChange={(e) => setName(e.target.value)} type="text" 
-              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+            <input value={name} onChange={(e) => setName(e.target.value)} type="text" disabled
+              className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-gray-100 rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150" />
           </div>
           <div class="col-span-2">
             <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Jenis Kelamin</label>
             <select onChange={(e)=> setGender(e.target.value)} 
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500">
-              {slcGender?.map(option => (
-                <option key={option.value} value={option.value} disabled={option.isDisabled}>
-                    {option.text}
-                </option>
-                ))}
+                <option key='1' value='none' disabled='true'>-- Silahkan Pilih--</option>
+                <option key='2' value='pria'>Pria</option>
+                <option key='3' value='wanita'>Wanita</option>
             </select>
-          </div>
-          <div class="col-span-2">
-            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nomor BPJS</label>
-            <input value={bpjs} onChange={(e) => setBpjs(e.target.value)} type="text" 
-              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
           </div>
           <div class="col-span-2">
             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Tanggal Lahir</label>
@@ -236,15 +249,25 @@ export default function DataPatient() {
               class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
           </div>
           <div class="col-span-2">
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nomor BPJS</label>
+            <input value={bpjs} onChange={(e) => setBpjs(e.target.value)} type="text" 
+              class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+          </div>
+          <div class="col-span-2">
             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Email</label>
             <input value={email} onChange={(e) => setEamil(e.target.value)} type="text" 
               className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
           </div>
+          <div class="col-span-2">
+            <label for="name" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Nomor Telepon</label>
+            <input value={phoneNo} onChange={(e) => setPhoneNo(e.target.value)} type="text" 
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" />
+          </div>
         </div>
-      </ModalSubmit>
+      </ModalForm>
       <div className="flex flex-wrap mt-4">
         <div className="w-full mb-12 px-4">
-          <CardInputPatient handleSave={handleSave} slcGender = {slcGender} isLoading={loading} />
+          <CardInputPatient handleSave={handleSave} isLoading={loading} />
         </div>
         <div className="w-full mb-12 px-4">
           <CardTable menu={menu} headerTable={headerTable} columnTable={columnTable} />

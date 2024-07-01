@@ -13,7 +13,7 @@ export default function ModalQueue({ show, dataQueue, onClose }) {
                 <div className="p-4 md:p-5 text-center">
                     <h3 className="mb-5 text-lg font-normal text-black-500 dark:text-black-400">Nomor Tiket</h3>
                     <h3 className="mb-5 text-4xl font-bold text-black-500 dark:text-black-400">{dataQueue.ticketNo}</h3>
-                    <h3 className="mb-1 text-lg font-normal text-black-500 dark:text-black-400">{dataQueue.specialization}</h3>
+                    <h3 className="mb-1 text-lg font-normal text-black-500 dark:text-black-400">{dataQueue.poli}</h3>
                     <h3 className="mb-3 text-md font-normal text-black-500 dark:text-black-400">{dataQueue.visitingTime}</h3>
                     <button onClick={onClose} data-modal-hide="popup-modal" type="button" 
                         className="text-white bg-blue-600 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:focus:ring-blue-800 font-medium rounded-lg text-sm inline-flex items-center px-20 py-2.5 text-center">

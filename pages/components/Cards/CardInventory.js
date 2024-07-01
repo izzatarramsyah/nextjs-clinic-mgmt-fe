@@ -12,14 +12,14 @@ export default function CardInventory({ isLoading, inputType, formData }) {
   const [quantity, setQuantity] = useState('');
   const [notes, setNotes] = useState('');
   const [category, setCategory] = useState('');
-  const [expired, setExpired] = useState('');
+  const [expired, setExpired] = useState(new Date());
   const [price, setPrice] = useState(null);
 
   const [equipmentName, setEquipmentName] = useState('');
   const [equipmentQty, setEquipmentQty] = useState('');
   const [equipmentLocation, setEquipmentLocation] = useState('');
   const [equipmentNotes, setEquipmentNotes] = useState('');
-  const [purchaseDate, setPurchaseDate] = useState('');
+  const [purchaseDate, setPurchaseDate] = useState(new Date());
   const [equipmentCategory, setEquipmentCategory] = useState('');
 
   const [showEquipmentInput, setShowEquipmentInput] = useState(false);
@@ -117,7 +117,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                         className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150">
                         <option value='none' disabled selected>-- Silahkan Pilih --</option>
                         <option value='medicalEq'>Peralatan Medis</option>
-                        <option value='medicine'>Obat</option>
+                        <option value='medicine'>Obat - Obatan</option>
                       </select>
                     </div>
                     <div className="relative w-4/12 mb-6">
@@ -144,7 +144,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Nama Obat
                             </label>
-                            <input value={medicineName} onChange={(e) => setMedicineName(e.target.value)}
+                            <input value={medicineName} onChange={(e) => setMedicineName(e.target.value)} placeholder='Nama Obat'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -178,7 +178,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Tanggal Expired
                             </label>
-                            <input value={expired} onChange={(e) => setExpired(e.target.value)}
+                            <DatePicker wrapperClassName="w-full" selected={expired} onChange={(date) => setExpired(date)} placeholder='Tanggal Expired'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -190,7 +190,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Jumlah Stok Masuk
                             </label>
-                            <input value={quantity} onChange={(e) => setQuantity(e.target.value)}
+                            <input value={quantity} onChange={(e) => setQuantity(e.target.value)} placeholder='Jumlah Stok Masuk'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -202,7 +202,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Harga Satuan
                             </label>
-                            <input value={price} onChange={(e) => setPrice(e.target.value)}
+                            <input value={price} onChange={(e) => setPrice(e.target.value)} placeholder='Harga Satuan'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -214,7 +214,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Keterangan
                             </label>
-                            <input value={notes} onChange={(e) => setNotes(e.target.value)}
+                            <input value={notes} onChange={(e) => setNotes(e.target.value)} placeholder='Keterangan'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -250,7 +250,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Nama Peralatan
                             </label>
-                            <input value={equipmentName} onChange={(e) => setEquipmentName(e.target.value)}
+                            <input value={equipmentName} onChange={(e) => setEquipmentName(e.target.value)} placeholder='Nama Peralatan'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -279,7 +279,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Jumlah Unit
                             </label>
-                            <input value={equipmentQty} onChange={(e) => setEquipmentQty(e.target.value)}
+                            <input value={equipmentQty} onChange={(e) => setEquipmentQty(e.target.value)}  placeholder='Jumlah Unit'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -291,7 +291,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Lokasi
                             </label>
-                            <input value={equipmentLocation} onChange={(e) => setEquipmentLocation(e.target.value)}
+                            <input value={equipmentLocation} onChange={(e) => setEquipmentLocation(e.target.value)}  placeholder='Lokasi'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -303,7 +303,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Tanggal Beli
                             </label>
-                            <input value={purchaseDate} onChange={(e) => setPurchaseDate(e.target.value)}
+                            <DatePicker wrapperClassName="w-full" selected={purchaseDate} onChange={(date) => setPurchaseDate(date)} placeholder='Tanggal Beli'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
@@ -315,7 +315,7 @@ export default function CardInventory({ isLoading, inputType, formData }) {
                               className="block uppercase text-blueGray-600 text-xs font-bold mb-2"
                               htmlFor="grid-password" > Keterangan
                             </label>
-                            <input value={equipmentNotes} onChange={(e) => setEquipmentNotes(e.target.value)}
+                            <input value={equipmentNotes} onChange={(e) => setEquipmentNotes(e.target.value)}  placeholder='Keterangan'
                               className="border-0 px-3 py-3 placeholder-blueGray-300 text-blueGray-600 bg-white rounded text-sm shadow focus:outline-none focus:ring w-full ease-linear transition-all duration-150"/>
                           </div>
                         </div>
