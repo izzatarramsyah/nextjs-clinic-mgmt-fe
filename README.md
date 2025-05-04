@@ -1,19 +1,62 @@
-# NEXT JS Simple Project
+# Clinic Management System (Next.js)
 
-## Project Name
-Clinic Management
+A simple **Next.js frontend** web application designed for **Clinic Management**. This application helps manage clinic operations with features such as dashboards, appointment scheduling, and real-time updates. It also includes secure authentication with **JWT** and data encryption using **AES256** for sensitive data.
 
-## Project Description
-Simple Frontend Web Application for Clinic Management Case Study
+---
 
-## Project Stack
-- Next JS
-- JWT
-- Encryption aes256
-- Socket Io
-- npm
+## 📦 Tech Stack
 
-## Project Feature ( On Going )
+- **Next.js** for frontend development
+- **JWT (JSON Web Token)** for authentication
+- **AES256** for encryption/decryption of sensitive data
+- **Socket.io** for real-time communication
+- **npm** for package management
+
+---
+
+## 🔧 Features (On Going)
+
+- 🏥 **Dashboard**: Overview of clinic operations and key metrics.
+- 📅 **Appointment Scheduling**: Manage patient appointments and track upcoming visits.
+- 🔒 **Secure Authentication**: Uses **JWT** to authenticate users and protect private routes.
+- 🗝️ **Data Encryption**: Ensures sensitive patient data is securely encrypted and decrypted using **AES256**.
+- 🔄 **Real-time Updates**: **Socket.io** provides real-time updates for users (e.g., appointment status changes).
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+- **Node.js** (latest version recommended)
+- **npm** (for dependency management)
+
+### Installation
+
+1. **Clone the repository:**
+    ```bash
+    git clone https://github.com/izzatarramsyah/nextjs-clinic-mgmt-fe
+    cd clinic-management-nextjs
+    ```
+
+2. **Install dependencies**:
+    ```bash
+    npm install
+    ```
+
+3. **Configure environment variables**: Create a `.env` file based on the provided `.env.example` file and configure it with the necessary values (e.g., backend API URL, JWT secret, etc.).
+
+4. **Run the application**:
+    ```bash
+    npm run dev
+    ```
+
+5. **Access the application**: The application will be available at `http://localhost:3000`.
+
+---
+
+## 🖼️ Project Preview
+
 **Dashboard**:
 - Queue Information
 <img width="956" alt="queue" src="https://github.com/izzatarramsyah/clinic-frontend-nextjs/assets/24617733/ca2dbed1-482e-437e-b9f7-d8597ea3bd11">
